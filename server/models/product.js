@@ -23,8 +23,22 @@ const productSchema = new mongoose.Schema(
       ref: "Store",
       required: true,
     },
+    category: {
+      type: String,
+      default: "General",
+    },
+    stock: {
+      type: Number,
+      default: 10,
+    },
+    available: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true },
 );
+
+productSchema.index({ store: 1 });
 
 module.exports = mongoose.model("Product", productSchema);

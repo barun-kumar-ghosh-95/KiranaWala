@@ -3,83 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store Products</title>
+    <title>Store Products — KiranaWala</title>
+    <meta name="description" content="Explore products, pricing, and availability from your local Kirana store.">
     <link rel="stylesheet" href="/css/styles.css">
-    <style>
-        .products-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-        .product-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            background: white;
-        }
-        .product-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-        .back-button {
-            margin: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <header class="dashboard-header">
-            <div class="header-content">
-                <button class="back-button" onclick="goBack()">← Back</button>
-                <h2 id="store-name">Store Products</h2>
+<body class="customer-body">
+    <div id="accessibility-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Header Navigation -->
+    <header class="app-navbar" role="banner">
+        <div class="navbar-container">
+            <div class="nav-brand">
+                <a href="/customer/dashboard" class="brand-link" aria-label="KiranaWala Home">
+                    <span class="brand-icon">🛒</span>
+                    <span class="brand-text">KiranaWala</span>
+                </a>
             </div>
-        </header>
-        
-        <div id="products-container" class="products-container">
-            <!-- Products will be loaded here -->
+            <div class="nav-actions">
+                <button class="nav-back-btn" onclick="goBackToDashboard()" aria-label="Back to Nearby Stores">
+                    ← Back to Stores
+                </button>
+            </div>
         </div>
-    </div>
+    </header>
 
-    <script>
-        async function loadProducts() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const storeId = urlParams.get('storeId');
-            
-            try {
-                const response = await fetch(`/api/store/${storeId}/products`);
-                const products = await response.json();
-                displayProducts(products);
-            } catch (error) {
-                console.error('Error loading products:', error);
-            }
-        }
-
-        function displayProducts(products) {
-            const container = document.getElementById('products-container');
-            container.innerHTML = products.map(product => `
-                <div class="product-card">
-                    <img src="${product.image}" alt="${product.name}" class="product-image">
-                    <h3>${product.name}</h3>
-                    <p>${product.description}</p>
-                    <p>Price: ₹${product.price}</p>
+    <main class="products-main-layout" role="main">
+        <!-- Store Identity & Context Banner -->
+        <section id="store-header-container" class="store-context-banner" aria-labelledby="store-name">
+            <div class="store-context-content">
+                <div class="store-title-row">
+                    <h1 id="store-name" class="store-headline">Loading Store...</h1>
+                    <span id="store-category-badge" class="store-cat-badge">Kirana</span>
                 </div>
-            `).join('');
-        }
+                <p id="store-description" class="store-subtext">Fetching store details...</p>
+            </div>
+        </section>
 
-        function goBack() {
-            window.history.back();
-        }
+        <!-- Product Discovery Control Bar (Search, Filter, Sort) -->
+        <section class="discovery-controls-section" aria-label="Product Controls">
+            <div class="search-sort-bar">
+                <div class="search-input-wrapper">
+                    <span class="search-icon" aria-hidden="true">🔍</span>
+                    <input 
+                        type="text" 
+                        id="product-search" 
+                        class="search-input" 
+                        placeholder="Search products by name, category, or description..."
+                        aria-label="Search products in this store"
+                    >
+                </div>
+                <div class="sort-wrapper">
+                    <label for="sort-select" class="sort-label">Sort by:</label>
+                    <select id="sort-select" class="sort-select" aria-label="Sort products">
+                        <option value="default">Default</option>
+                        <option value="price-asc">Price: Low → High</option>
+                        <option value="price-desc">Price: High → Low</option>
+                        <option value="name-asc">Name: A → Z</option>
+                    </select>
+                </div>
+            </div>
 
-        document.addEventListener('DOMContentLoaded', loadProducts);
-    </script>
+            <!-- Category Filter Pills -->
+            <div class="category-filters-row">
+                <span class="filter-label">Categories:</span>
+                <div id="category-filter-container" class="category-pills-scroll" role="group" aria-label="Category Filters">
+                    <button class="filter-pill active" type="button" aria-pressed="true">All</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product List Header -->
+        <div class="products-meta-header">
+            <h2 class="section-title">Available Products</h2>
+            <span id="results-count" class="results-count-badge">Loading...</span>
+        </div>
+
+        <!-- Products Grid Container -->
+        <section id="products-grid" class="products-grid-container" aria-label="Product List">
+            <!-- Skeleton cards / Product cards rendered by products.js -->
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>© 2026 KiranaWala — Hyperlocal Grocery Commerce</p>
+    </footer>
+
+    <script src="/customer/products.js"></script>
 </body>
 </html>

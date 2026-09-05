@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const Store = require("../models/store");
+const Product = require("../models/product");
+const mongoose = require("mongoose");
 
 // Customer Registration
 router.post("/register", async (req, res) => {
@@ -109,6 +111,39 @@ router.get("/stores", async (req, res) => {
   try {
     const stores = await Store.find().populate("owner", "username");
     res.json(stores);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get products for a specific store (Customer Product Discovery)
+router.get("/stores/:storeId/products", async (req, res) => {
+  try {
+    const { storeId } = req.params;
+
+    if (!storeId || !mongoose.Types.ObjectId.isValid(storeId)) {
+      return res.status(400).json({ message: "Invalid store ID" });
+    }
+
+    const store = await Store.findById(storeId).select(
+      "name description category owner location",
+    );
+
+    if (!store) {
+      return res.status(404).json({ message: "Store not found" });
+    }
+
+    const products = await Product.find({ store: storeId });
+
+    res.json({
+      store: {
+        _id: store._id,
+        name: store.name,
+        category: store.category,
+        description: store.description,
+      },
+      products,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
