@@ -99,6 +99,26 @@ app.get("/customer/products", (req, res) => {
   res.sendFile(path.join(__dirname, "../views/customer/products.html"));
 });
 
+// Customer cart
+app.get("/customer/cart", (req, res) => {
+  res.sendFile(path.join(__dirname, "../views/customer/cart.html"));
+});
+
+// Customer checkout
+app.get("/customer/checkout", (req, res) => {
+  res.sendFile(path.join(__dirname, "../views/customer/checkout.html"));
+});
+
+// Customer orders history
+app.get("/customer/orders", (req, res) => {
+  res.sendFile(path.join(__dirname, "../views/customer/orders.html"));
+});
+
+// Customer order details
+app.get("/customer/orders/:orderId", (req, res) => {
+  res.sendFile(path.join(__dirname, "../views/customer/order.html"));
+});
+
 // Store owner login
 app.get("/store-owner/login", (req, res) => {
   res.sendFile(path.join(__dirname, "../views/store-owner/login.html"));

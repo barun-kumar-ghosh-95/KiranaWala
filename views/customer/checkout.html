@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — KiranaWala</title>
+    <meta name="description" content="Complete your grocery order delivery details and place your order on KiranaWala.">
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="customer-body">
+    <div id="accessibility-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Header Navigation -->
+    <header class="app-navbar" role="banner">
+        <div class="navbar-container">
+            <div class="nav-brand">
+                <a href="/customer/dashboard" class="brand-link" aria-label="KiranaWala Home">
+                    <span class="brand-icon">🛒</span>
+                    <span class="brand-text">KiranaWala</span>
+                </a>
+            </div>
+            <div class="nav-actions">
+                <a href="/customer/cart" class="nav-back-btn" aria-label="Back to Cart">
+                    ← Back to Cart
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="checkout-main-layout" role="main">
+        <!-- Main Checkout Form & Summary Container -->
+        <div id="checkout-form-wrapper" class="checkout-grid-container">
+            <!-- Left Column: Delivery Form -->
+            <section class="checkout-delivery-card" aria-labelledby="delivery-heading">
+                <h1 id="delivery-heading" class="checkout-section-title">Delivery Information</h1>
+                <form id="checkoutForm" onsubmit="handlePlaceOrder(event)">
+                    <div class="form-group">
+                        <label for="fullName" class="form-label">Full Name *</label>
+                        <input type="text" id="fullName" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number *</label>
+                        <input type="tel" id="phone" class="form-control" placeholder="e.g. 9876543210" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address" class="form-label">Delivery Address *</label>
+                        <textarea id="address" class="form-control" rows="3" placeholder="House No, Street, Landmark..." required></textarea>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" id="city" class="form-control" placeholder="City" value="New Delhi">
+                        </div>
+                        <div class="form-group">
+                            <label for="pincode" class="form-label">Pincode</label>
+                            <input type="text" id="pincode" class="form-control" placeholder="110001">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-place-order" class="btn-place-order">
+                        Place Order →
+                    </button>
+                </form>
+            </section>
+
+            <!-- Right Column: Order Summary Card -->
+            <aside class="checkout-summary-card" aria-label="Order Items Summary">
+                <h2 class="summary-title">Order Items</h2>
+                <div id="checkout-store-context" class="checkout-store-info">
+                    <span class="store-badge-small" id="checkout-store-cat">Kirana</span>
+                    <strong id="checkout-store-name">Store Name</strong>
+                </div>
+
+                <div id="checkout-items-list" class="checkout-items-scroll">
+                    <!-- Items rendered dynamically by checkout.js -->
+                </div>
+
+                <hr class="summary-divider">
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="checkout-subtotal">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Fee</span>
+                    <span class="free-text">FREE</span>
+                </div>
+                <hr class="summary-divider">
+                <div class="summary-row summary-total">
+                    <span>Total</span>
+                    <span id="checkout-total">₹0</span>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Order Success View State (Initially Hidden) -->
+        <section id="order-success-screen" class="order-success-container" style="display: none;" aria-label="Order Confirmation">
+            <div class="order-success-card">
+                <div class="success-icon-badge">🎉</div>
+                <h1 class="success-title">ORDER PLACED</h1>
+                <p id="success-order-id" class="order-id-badge">Order #KW-XXXX</p>
+                <p class="success-message">Your order has been placed successfully and sent to the store for fulfillment.</p>
+
+                <div class="success-details-box">
+                    <div class="detail-line">
+                        <span>Store:</span>
+                        <strong id="success-store-name">Local Kirana Store</strong>
+                    </div>
+                    <div class="detail-line">
+                        <span>Delivery Address:</span>
+                        <strong id="success-delivery-address">123 Street Name</strong>
+                    </div>
+                    <div class="detail-line">
+                        <span>Total Paid:</span>
+                        <strong id="success-total-paid" class="text-green">₹0</strong>
+                    </div>
+                </div>
+
+                <div class="success-actions-row">
+                    <a id="btn-view-placed-order" href="/customer/orders" class="btn-success-primary">View Order Details</a>
+                    <a href="/customer/orders" class="btn-secondary-link">My Orders</a>
+                    <a href="/customer/dashboard" class="btn-secondary-link">Continue Shopping</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>© 2026 KiranaWala — Hyperlocal Grocery Commerce</p>
+    </footer>
+
+    <script src="/customer/checkout.js"></script>
+</body>
+</html>

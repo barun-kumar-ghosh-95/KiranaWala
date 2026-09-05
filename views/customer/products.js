@@ -21,6 +21,7 @@ async function initProductDiscovery() {
 
     // Accessibility focus setup
     setupAccessibilityListeners();
+    fetchInitialCartCount();
 
     if (!storeId || !isValidObjectId(storeId)) {
         renderErrorState('Invalid or missing Store ID. Please select a valid store from the dashboard.');
@@ -273,10 +274,10 @@ function createProductCard(product) {
         addBtn.disabled = true;
         addBtn.classList.add('disabled');
     } else {
-        addBtn.title = 'Cart feature coming in Part 2';
-        addBtn.onclick = () => {
-            updateLiveRegion(`Added ${product.name} to cart selection.`);
-            alert(`Added "${product.name}" to cart preview! (Cart checkout will be enabled in Part 2)`);
+        addBtn.title = 'Add to Cart';
+        addBtn.onclick = (e) => {
+            e.stopPropagation();
+            handleAddToCart(product._id, product.name, addBtn);
         };
     }
     footer.appendChild(addBtn);
@@ -409,3 +410,107 @@ function updateLiveRegion(message) {
 function goBackToDashboard() {
     window.location.href = '/customer/dashboard';
 }
+
+async function fetchInitialCartCount() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+        const res = await fetch('/api/customer/cart', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            const cart = await res.json();
+            const count = cart.items ? cart.items.reduce((acc, item) => acc + item.quantity, 0) : 0;
+            updateNavCartBadge(count);
+        }
+    } catch (e) {
+        console.error('Failed to fetch initial cart count:', e);
+    }
+}
+
+function updateNavCartBadge(count) {
+    const badge = document.getElementById('nav-cart-count');
+    if (badge) {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'inline-block' : 'inline-block';
+    }
+}
+
+async function handleAddToCart(productId, productName, btnElement) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Please login to add items to your cart.');
+        window.location.href = '/customer/login';
+        return;
+    }
+
+    if (btnElement) {
+        btnElement.disabled = true;
+        btnElement.textContent = 'Adding...';
+    }
+
+    try {
+        const res = await fetch('/api/customer/cart/items', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ productId, quantity: 1 })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            updateLiveRegion(`Added ${productName} to cart.`);
+            showToast(`Added "${productName}" to your cart!`);
+            const totalQty = data.items ? data.items.reduce((acc, i) => acc + i.quantity, 0) : 0;
+            updateNavCartBadge(totalQty);
+        } else if (data.code === 'CROSS_STORE_CONFLICT') {
+            if (confirm(`${data.message}\n\nWould you like to clear your current cart to start shopping from this store?`)) {
+                await clearCart(token);
+                await handleAddToCart(productId, productName, btnElement);
+                return;
+            }
+        } else {
+            alert(data.message || 'Failed to add item to cart');
+        }
+    } catch (err) {
+        console.error('Error adding to cart:', err);
+        alert('Network error while adding to cart.');
+    } finally {
+        if (btnElement) {
+            btnElement.disabled = false;
+            btnElement.textContent = 'Add to Cart';
+        }
+    }
+}
+
+async function clearCart(token) {
+    try {
+        await fetch('/api/customer/cart', {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        updateNavCartBadge(0);
+    } catch (e) {
+        console.error('Error clearing cart:', e);
+    }
+}
+
+function showToast(message) {
+    let toast = document.getElementById('app-toast-notification');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'app-toast-notification';
+        toast.className = 'app-toast';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+

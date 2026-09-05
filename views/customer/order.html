@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details — KiranaWala</title>
+    <meta name="description" content="View details, itemized receipt, status timeline, and delivery information for your KiranaWala order.">
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="customer-body">
+    <div id="accessibility-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Header Navigation -->
+    <header class="app-navbar" role="banner">
+        <div class="navbar-container">
+            <div class="nav-brand">
+                <a href="/customer/dashboard" class="brand-link" aria-label="KiranaWala Home">
+                    <span class="brand-icon">🛒</span>
+                    <span class="brand-text">KiranaWala</span>
+                </a>
+            </div>
+            <nav class="nav-actions" aria-label="Customer Navigation">
+                <a href="/customer/orders" class="nav-back-btn" aria-label="Back to My Orders">
+                    ← Back to Orders
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="order-details-main-layout" role="main">
+        <!-- Error State View (Hidden by default) -->
+        <section id="order-error-state" class="order-error-container" style="display: none;" aria-label="Order Error">
+            <div class="order-error-card">
+                <div class="error-icon">⚠️</div>
+                <h1 id="error-title">Order Not Found</h1>
+                <p id="error-message">We couldn't find the requested order. It may not exist or you don't have access to it.</p>
+                <div class="error-actions">
+                    <a href="/customer/orders" class="btn-browse-stores">Back to My Orders</a>
+                    <a href="/customer/dashboard" class="btn-secondary-link">Browse Stores</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Content Container -->
+        <div id="order-details-content" class="order-details-grid">
+            <!-- Left Column: Main Order Details & Timeline -->
+            <div class="order-primary-column">
+                <!-- Order Header Card -->
+                <section class="order-header-card" aria-labelledby="order-main-heading">
+                    <div class="order-header-top">
+                        <div>
+                            <h1 id="order-main-heading" class="order-details-title">Order #KW-XXXX</h1>
+                            <p id="order-placed-date" class="order-details-subtitle">Placed on --</p>
+                        </div>
+                        <span id="order-status-badge" class="order-status-badge status-placed">PLACED</span>
+                    </div>
+                    <div class="order-store-banner-inner">
+                        <span id="order-store-cat" class="store-cat-badge">Groceries</span>
+                        <strong id="order-store-name" class="order-store-title">Store Name</strong>
+                    </div>
+                </section>
+
+                <!-- Status Timeline Section -->
+                <section class="order-timeline-card" aria-label="Order Status Progress">
+                    <h2 class="section-card-title">Order Status Progress</h2>
+                    <div id="status-timeline-container" class="timeline-stepper">
+                        <!-- Rendered dynamically by order.js -->
+                    </div>
+                </section>
+
+                <!-- Items Receipt Section -->
+                <section class="order-items-card" aria-label="Ordered Items List">
+                    <h2 class="section-card-title">Ordered Items</h2>
+                    <div id="order-items-table" class="order-items-list">
+                        <!-- Rendered dynamically by order.js -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Financial Breakdown & Delivery Address -->
+            <aside class="order-secondary-column" aria-label="Summary & Delivery Address">
+                <!-- Payment Summary Card -->
+                <section class="order-summary-card" aria-labelledby="summary-heading">
+                    <h2 id="summary-heading" class="summary-title">Payment Summary</h2>
+                    <div class="summary-row">
+                        <span>Items Subtotal</span>
+                        <span id="order-subtotal">₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery Fee</span>
+                        <span class="free-text">FREE</span>
+                    </div>
+                    <hr class="summary-divider">
+                    <div class="summary-row summary-total">
+                        <span>Total Amount</span>
+                        <span id="order-total">₹0</span>
+                    </div>
+
+                    <!-- Cancel Order Action Section -->
+                    <div id="cancel-order-container" class="cancel-order-box" style="display: none;">
+                        <button id="btn-cancel-order" class="btn-cancel-order-danger" onclick="confirmCancelOrder()">
+                            Cancel Order
+                        </button>
+                        <p class="cancel-note">Cancellation is available only while your order is in <strong>PLACED</strong> status.</p>
+                    </div>
+                </section>
+
+                <!-- Delivery Address Card -->
+                <section class="order-address-card" aria-labelledby="address-heading">
+                    <h2 id="address-heading" class="summary-title">Delivery Address</h2>
+                    <div class="address-details-content">
+                        <strong id="addr-fullname">Customer Name</strong>
+                        <p id="addr-phone">📞 Phone: --</p>
+                        <p id="addr-street" class="address-street-text">Address line</p>
+                        <p id="addr-city-pincode">City, Pincode</p>
+                    </div>
+                </section>
+
+                <!-- Quick Actions Card -->
+                <div class="order-actions-card">
+                    <a href="/customer/orders" class="btn-secondary-block">← Back to My Orders</a>
+                    <a href="/customer/dashboard" class="btn-primary-block">Continue Shopping</a>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>© 2026 KiranaWala — Hyperlocal Grocery Commerce</p>
+    </footer>
+
+    <script src="/customer/order.js"></script>
+</body>
+</html>

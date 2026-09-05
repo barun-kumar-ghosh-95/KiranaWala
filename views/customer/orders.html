@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders — KiranaWala</title>
+    <meta name="description" content="View your order history, track order status, and review details of past grocery purchases on KiranaWala.">
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="customer-body">
+    <div id="accessibility-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Header Navigation -->
+    <header class="app-navbar" role="banner">
+        <div class="navbar-container">
+            <div class="nav-brand">
+                <a href="/customer/dashboard" class="brand-link" aria-label="KiranaWala Home">
+                    <span class="brand-icon">🛒</span>
+                    <span class="brand-text">KiranaWala</span>
+                </a>
+            </div>
+            <nav class="nav-actions" aria-label="Customer Navigation">
+                <a href="/customer/dashboard" class="nav-link">Stores</a>
+                <a href="/customer/cart" class="nav-link">Cart</a>
+                <a href="/customer/orders" class="nav-link active" aria-current="page">My Orders</a>
+                <button onclick="handleLogout()" class="nav-btn-logout" aria-label="Logout account">Logout</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="orders-main-layout" role="main">
+        <div class="orders-page-header">
+            <div>
+                <h1 class="page-title">My Orders</h1>
+                <p class="page-subtitle">Track your current orders and review past purchases</p>
+            </div>
+            <span id="orders-count-badge" class="results-count-badge">Loading...</span>
+        </div>
+
+        <!-- Orders List Container -->
+        <section id="orders-list-container" class="orders-list" aria-label="Order History List">
+            <!-- Order cards rendered dynamically by orders.js -->
+        </section>
+
+        <!-- Empty Orders State -->
+        <section id="empty-orders-state" class="empty-orders-container" style="display: none;" aria-label="No Orders Found">
+            <div class="empty-orders-card">
+                <div class="empty-orders-icon">📦</div>
+                <h2>NO ORDERS YET</h2>
+                <p>Your orders will appear here after you shop from a local store.</p>
+                <a href="/customer/dashboard" class="btn-browse-stores">Browse Stores</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>© 2026 KiranaWala — Hyperlocal Grocery Commerce</p>
+    </footer>
+
+    <script src="/customer/orders.js"></script>
+</body>
+</html>

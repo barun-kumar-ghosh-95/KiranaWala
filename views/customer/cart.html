@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Shopping Cart — KiranaWala</title>
+    <meta name="description" content="View items in your KiranaWala shopping cart, adjust quantities, and proceed to checkout.">
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="customer-body">
+    <div id="accessibility-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Header Navigation -->
+    <header class="app-navbar" role="banner">
+        <div class="navbar-container">
+            <div class="nav-brand">
+                <a href="/customer/dashboard" class="brand-link" aria-label="KiranaWala Home">
+                    <span class="brand-icon">🛒</span>
+                    <span class="brand-text">KiranaWala</span>
+                </a>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-back-btn" onclick="goBackToStores()" aria-label="Back to Nearby Stores">
+                    ← Back to Stores
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="cart-main-layout" role="main">
+        <!-- Store Identity & Context Banner -->
+        <section id="cart-store-banner" class="store-context-banner" style="display: none;" aria-labelledby="cart-store-name">
+            <div class="store-context-content">
+                <div class="store-title-row">
+                    <h1 id="cart-store-name" class="store-headline">Store Name</h1>
+                    <span id="cart-store-category" class="store-cat-badge">Kirana</span>
+                </div>
+                <p id="cart-store-desc" class="store-subtext">Store description</p>
+            </div>
+        </section>
+
+        <div class="cart-page-header">
+            <h1 class="page-title">Your Shopping Cart</h1>
+            <span id="cart-item-count" class="results-count-badge">Loading...</span>
+        </div>
+
+        <!-- Main Cart Grid (Items + Summary Card) -->
+        <div id="cart-content-wrapper" class="cart-content-grid">
+            <!-- Left Column: Cart Items -->
+            <section class="cart-items-section" aria-label="Shopping Cart Items">
+                <div id="cart-items-container" class="cart-items-list">
+                    <!-- Cart items rendered dynamically by cart.js -->
+                </div>
+            </section>
+
+            <!-- Right Column: Order Summary Card -->
+            <aside id="cart-summary-card" class="cart-summary-panel" aria-label="Order Summary">
+                <h2 class="summary-title">Order Summary</h2>
+                <div class="summary-row">
+                    <span>Items Subtotal</span>
+                    <span id="summary-subtotal">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Fee</span>
+                    <span class="free-text">FREE</span>
+                </div>
+                <hr class="summary-divider">
+                <div class="summary-row summary-total">
+                    <span>Total Amount</span>
+                    <span id="summary-total">₹0</span>
+                </div>
+
+                <button id="btn-proceed-checkout" class="btn-checkout-primary" onclick="proceedToCheckout()">
+                    Proceed to Checkout →
+                </button>
+                <button id="btn-clear-cart" class="btn-clear-secondary" onclick="confirmClearCart()">
+                    Clear Cart
+                </button>
+            </aside>
+        </div>
+
+        <!-- Empty Cart View State -->
+        <section id="empty-cart-state" class="empty-cart-container" style="display: none;" aria-label="Empty Cart">
+            <div class="empty-cart-card">
+                <div class="empty-cart-icon">🛒</div>
+                <h2>Your cart is empty</h2>
+                <p>Browse nearby stores and add fresh groceries to get started.</p>
+                <a href="/customer/dashboard" class="btn-browse-stores">Browse Nearby Stores</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>© 2026 KiranaWala — Hyperlocal Grocery Commerce</p>
+    </footer>
+
+    <script src="/customer/cart.js"></script>
+</body>
+</html>

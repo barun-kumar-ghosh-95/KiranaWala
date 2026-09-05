@@ -8,13 +8,9 @@ const authenticateToken = (req, res, next) => {
   }
 
   const token = authHeader.split(" ")[1];
+  const secret = process.env.JWT_SECRET || "your_jwt_secret";
 
-  if (!process.env.JWT_SECRET) {
-    console.error("JWT_SECRET is missing");
-    return res.status(500).json({ message: "Internal server error" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+  jwt.verify(token, secret, (err, decoded) => {
     if (err) {
       return res.status(403).json({ message: "Invalid or expired token" });
     }
