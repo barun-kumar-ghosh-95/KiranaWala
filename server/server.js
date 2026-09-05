@@ -81,51 +81,37 @@ app.get("/", (req, res) => {
 
 // Customer login
 app.get("/customer/login", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../views/customer/login.html")
-  );
+  res.sendFile(path.join(__dirname, "../views/customer/login.html"));
 });
 
 // Customer register
 app.get("/customer/register", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../views/customer/register.html")
-  );
+  res.sendFile(path.join(__dirname, "../views/customer/register.html"));
 });
 
 // Customer dashboard
 app.get("/customer/dashboard", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../views/customer/dashboard.html")
-  );
+  res.sendFile(path.join(__dirname, "../views/customer/dashboard.html"));
 });
 
 // Customer products
 app.get("/customer/products", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../views/customer/products.html")
-  );
+  res.sendFile(path.join(__dirname, "../views/customer/products.html"));
 });
 
 // Store owner login
 app.get("/store-owner/login", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../views/store-owner/login.html")
-  );
+  res.sendFile(path.join(__dirname, "../views/store-owner/login.html"));
 });
 
 // Store owner register
 app.get("/store-owner/register", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../views/store-owner/register.html")
-  );
+  res.sendFile(path.join(__dirname, "../views/store-owner/register.html"));
 });
 
 // Store owner dashboard
 app.get("/store-owner/dashboard", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../views/store-owner/dashboard.html")
-  );
+  res.sendFile(path.join(__dirname, "../views/store-owner/dashboard.html"));
 });
 
 // =====================================================

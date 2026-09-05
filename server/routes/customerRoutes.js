@@ -47,6 +47,63 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Get nearby stores
+router.get("/stores/nearby", async (req, res) => {
+  try {
+    const { latitude, longitude, radiusKm } = req.query;
+
+    if (latitude === undefined || longitude === undefined) {
+      return res
+        .status(400)
+        .json({ message: "Latitude and longitude are required" });
+    }
+
+    const lat = parseFloat(latitude);
+    const lng = parseFloat(longitude);
+
+    if (
+      isNaN(lat) ||
+      isNaN(lng) ||
+      lat < -90 ||
+      lat > 90 ||
+      lng < -180 ||
+      lng > 180
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Invalid geographic coordinates" });
+    }
+
+    const radius = radiusKm !== undefined ? parseFloat(radiusKm) : 8;
+    if (isNaN(radius) || radius <= 0) {
+      return res.status(400).json({ message: "Invalid radius" });
+    }
+
+    const maxDistanceMeters = radius * 1000;
+
+    const stores = await Store.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: "Point",
+            coordinates: [lng, lat],
+          },
+          distanceField: "distance",
+          maxDistance: maxDistanceMeters,
+          spherical: true,
+        },
+      },
+    ]);
+
+    // Populate owner details excluding password
+    await Store.populate(stores, { path: "owner", select: "-password" });
+
+    res.json(stores);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Get all stores (for customer dashboard)
 router.get("/stores", async (req, res) => {
   try {

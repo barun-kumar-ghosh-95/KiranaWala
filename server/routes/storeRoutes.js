@@ -4,6 +4,11 @@ const Store = require("../models/store");
 const User = require("../models/user");
 const Product = require("../models/product");
 const jwt = require("jsonwebtoken");
+const {
+  authenticateToken,
+  requireStoreOwner,
+} = require("../middleware/authMiddleware");
+const mongoose = require("mongoose");
 
 // Register store owner
 router.post("/register", async (req, res) => {
@@ -15,6 +20,8 @@ router.post("/register", async (req, res) => {
       storeName,
       storeDescription,
       storeCategory,
+      latitude,
+      longitude,
     } = req.body;
 
     if (
@@ -34,6 +41,34 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Email already registered" });
     }
 
+    let locationData = undefined;
+    if (latitude !== undefined || longitude !== undefined) {
+      if (latitude === undefined || longitude === undefined) {
+        return res.status(400).json({
+          message:
+            "Both latitude and longitude are required if providing location",
+        });
+      }
+      const lat = parseFloat(latitude);
+      const lng = parseFloat(longitude);
+      if (
+        isNaN(lat) ||
+        isNaN(lng) ||
+        lat < -90 ||
+        lat > 90 ||
+        lng < -180 ||
+        lng > 180
+      ) {
+        return res
+          .status(400)
+          .json({ message: "Invalid geographic coordinates" });
+      }
+      locationData = {
+        type: "Point",
+        coordinates: [lng, lat],
+      };
+    }
+
     // Create the store-owner user. Password hashing is handled by the
     // User model's pre-save hook.
     const user = new User({
@@ -50,6 +85,7 @@ router.post("/register", async (req, res) => {
       description: storeDescription,
       category: storeCategory,
       owner: user._id,
+      ...(locationData && { location: locationData }),
     });
     await store.save();
 
@@ -95,44 +131,62 @@ router.post("/login", async (req, res) => {
 });
 
 // Add product route
-router.post("/products", async (req, res) => {
-  try {
-    console.log("Received product data:", req.body); // Debug log
+router.post(
+  "/products",
+  authenticateToken,
+  requireStoreOwner,
+  async (req, res) => {
+    try {
+      const { name, price, description, image, storeId } = req.body;
 
-    const { name, price, description, image, storeId } = req.body;
+      // Validate required fields
+      if (!name || !price || !description || !image || !storeId) {
+        return res.status(400).json({ message: "All fields are required" });
+      }
 
-    // Validate required fields
-    if (!name || !price || !description || !image || !storeId) {
-      return res.status(400).json({ message: "All fields are required" });
+      if (!mongoose.Types.ObjectId.isValid(storeId)) {
+        return res.status(400).json({ message: "Invalid store ID" });
+      }
+
+      // Verify ownership
+      const store = await Store.findById(storeId);
+      if (!store) {
+        return res.status(404).json({ message: "Store not found" });
+      }
+
+      if (store.owner.toString() !== req.user.id) {
+        return res
+          .status(403)
+          .json({ message: "Access denied: You do not own this store" });
+      }
+
+      // Create and save the product
+      const product = new Product({
+        name,
+        price,
+        description,
+        image,
+        store: storeId,
+      });
+
+      const savedProduct = await product.save();
+
+      // Update store's products array
+      await Store.findByIdAndUpdate(
+        storeId,
+        { $push: { products: savedProduct._id } },
+        { new: true },
+      );
+
+      res.status(201).json(savedProduct);
+    } catch (error) {
+      console.error("Add product error:", error);
+      res
+        .status(500)
+        .json({ message: "Failed to add product", error: error.message });
     }
-
-    // Create and save the product
-    const product = new Product({
-      name,
-      price,
-      description,
-      image,
-      store: storeId,
-    });
-
-    const savedProduct = await product.save();
-    console.log("Saved product:", savedProduct); // Debug log
-
-    // Update store's products array
-    await Store.findByIdAndUpdate(
-      storeId,
-      { $push: { products: savedProduct._id } },
-      { new: true },
-    );
-
-    res.status(201).json(savedProduct);
-  } catch (error) {
-    console.error("Add product error:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to add product", error: error.message });
-  }
-});
+  },
+);
 
 // Get all products for a store
 router.get("/products/:storeId", async (req, res) => {
@@ -147,39 +201,109 @@ router.get("/products/:storeId", async (req, res) => {
 });
 
 // Update a product
-router.put("/products/:productId", async (req, res) => {
-  try {
-    const updatedProduct = await Product.findByIdAndUpdate(
-      req.params.productId,
-      req.body,
-      { new: true },
-    );
-    res.json(updatedProduct);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error updating product", error: error.message });
-  }
-});
+router.put(
+  "/products/:productId",
+  authenticateToken,
+  requireStoreOwner,
+  async (req, res) => {
+    try {
+      const { productId } = req.params;
+
+      if (!mongoose.Types.ObjectId.isValid(productId)) {
+        return res.status(400).json({ message: "Invalid product ID" });
+      }
+
+      const product = await Product.findById(productId);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      const store = await Store.findById(product.store);
+      if (!store) {
+        return res.status(404).json({ message: "Store not found" });
+      }
+
+      if (store.owner.toString() !== req.user.id) {
+        return res
+          .status(403)
+          .json({ message: "Access denied: You do not own this product" });
+      }
+
+      const { name, price, description, image } = req.body;
+      const updateData = {};
+      if (name !== undefined) updateData.name = name;
+      if (price !== undefined) updateData.price = price;
+      if (description !== undefined) updateData.description = description;
+      if (image !== undefined) updateData.image = image;
+
+      const updatedProduct = await Product.findByIdAndUpdate(
+        productId,
+        updateData,
+        { new: true },
+      );
+      res.json(updatedProduct);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error updating product", error: error.message });
+    }
+  },
+);
 
 // Delete a product
-router.delete("/products/:productId/:storeId", async (req, res) => {
-  try {
-    // Remove product from store's products array
-    await Store.findByIdAndUpdate(req.params.storeId, {
-      $pull: { products: req.params.productId },
-    });
+router.delete(
+  "/products/:productId/:storeId",
+  authenticateToken,
+  requireStoreOwner,
+  async (req, res) => {
+    try {
+      const { productId, storeId } = req.params;
 
-    // Delete the product
-    await Product.findByIdAndDelete(req.params.productId);
+      if (
+        !mongoose.Types.ObjectId.isValid(productId) ||
+        !mongoose.Types.ObjectId.isValid(storeId)
+      ) {
+        return res.status(400).json({ message: "Invalid ID format" });
+      }
 
-    res.json({ message: "Product deleted successfully" });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error deleting product", error: error.message });
-  }
-});
+      const product = await Product.findById(productId);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      if (product.store.toString() !== storeId) {
+        return res
+          .status(400)
+          .json({ message: "Product does not belong to the specified store" });
+      }
+
+      const store = await Store.findById(storeId);
+      if (!store) {
+        return res.status(404).json({ message: "Store not found" });
+      }
+
+      if (store.owner.toString() !== req.user.id) {
+        return res
+          .status(403)
+          .json({ message: "Access denied: You do not own this store" });
+      }
+
+      // Remove product from store's products array
+      await Store.findByIdAndUpdate(storeId, {
+        $pull: { products: productId },
+      });
+
+      // Delete the product
+      await Product.findByIdAndDelete(productId);
+
+      res.json({ message: "Product deleted successfully" });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error deleting product", error: error.message });
+    }
+  },
+);
 
 // Get all stores (for customer dashboard)
 router.get("/all", async (req, res) => {
@@ -211,4 +335,4 @@ router.get("/:storeId/products", async (req, res) => {
   }
 });
 
-module.exports = router; 
+module.exports = router;

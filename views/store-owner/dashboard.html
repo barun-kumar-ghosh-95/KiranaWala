@@ -162,7 +162,8 @@
 
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
                     body: JSON.stringify({
                         name: document.getElementById('editProductName').value,
@@ -195,7 +196,10 @@
                 try {
                     const storeId = localStorage.getItem('storeId');
                     const response = await fetch(`/api/store/products/${currentProductId}/${storeId}`, {
-                        method: 'DELETE'
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
                     });
                     if (response.ok) {
                         loadProducts();
@@ -215,7 +219,8 @@
                 const response = await fetch('/api/store/products', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
                     body: JSON.stringify({
                         name: document.getElementById('productName').value,
