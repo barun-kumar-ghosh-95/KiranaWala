@@ -3,89 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Dashboard</title>
+    <title>Discover Stores | KiranaWala</title>
+
+    <!-- Google Fonts — Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body>
-    <div class="container">
-        <header class="dashboard-header">
-            <div class="header-content">
-                <h2>Discover Stores</h2>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search stores...">
-                </div>
+<body class="premium-dashboard">
+
+    <header class="premium-header">
+        <div class="premium-header-content">
+            <a href="/" class="brand-logo">KiranaWala</a>
+
+            <div class="header-controls">
+                <button class="logout-link" onclick="logout()">Sign Out</button>
             </div>
-            <button id="logoutBtn" onclick="logout()">Logout</button>
-        </header>
-        
-        <div class="stores-grid" id="storesList">
-            <!-- Stores will be loaded here -->
         </div>
+    </header>
 
-        <div id="stores-container">
-            <!-- Stores will be dynamically loaded here -->
-        </div>
-    </div>
+    <main class="dashboard-main">
+        <section class="hero-section">
+            <h1 class="hero-title">Groceries from stores near you</h1>
+            <p class="hero-subtitle">Discover local stores and shop nearby.</p>
+            <div id="location-status" class="location-indicator" aria-live="polite">
+                📍 Getting location...
+            </div>
+        </section>
 
-    <script>
-        // Load all stores when the page loads
-        document.addEventListener('DOMContentLoaded', loadStores);
-    
-        // Function to fetch and load all stores
-        async function loadStores() {
-            try {
-                const response = await fetch('/api/store/all');
-                const stores = await response.json();
-                displayStores(stores);
-            } catch (error) {
-                console.error('Error loading stores:', error);
-            }
-        }
-    
-        // Function to render all the stores on the page
-        function displayStores(stores) {
-            const storesContainer = document.getElementById('stores-container');
-            storesContainer.innerHTML = stores.map(store => createStoreCard(store)).join('');
-        }
-    
-        // Function to generate HTML for a single store card
-        function createStoreCard(store) {
-            const imageUrl = store.store?.image || `https://picsum.photos/400/300?random=${Math.random()}`;
-            const category = store.store?.category || 'General';
-            const name = store.store?.name || `${store.username}'s Store`;
-            const description = store.store?.description || 'Welcome to our store!';
-            const rating = store.store?.rating || '4.0';
-    
-            return `
-                <div class="store-card">
-                    <div class="store-image">
-                        <img src="${imageUrl}" alt="${store.username}'s Store">
-                        <div class="store-category-tag">${category}</div>
-                    </div>
-                    <div class="store-info">
-                        <h3>${name}</h3>
-                        <p class="store-description">${description}</p>
-                        <div class="store-meta">
-                            <span class="store-rating">★ ${rating}</span>
-                            <span class="store-owner">by ${store.username}</span>
-                        </div>
-                        <button onclick="viewProducts('${store._id}')" class="view-products-btn">View Products</button>
-                    </div>
-                </div>
-            `;
+        <!-- Map section — hidden until location is available -->
+        <section class="map-wrapper" id="map-section" hidden>
+            <div id="map"></div>
+        </section>
 
-        }
+        <!-- Location unavailable placeholder — shown when location is denied -->
+        <section class="map-placeholder" id="map-placeholder" hidden>
+            <div class="map-placeholder-inner">
+                <span class="map-placeholder-icon">🗺️</span>
+                <p class="map-placeholder-text">Enable location to see nearby stores on the map.</p>
+            </div>
+        </section>
 
-        function viewProducts(storeId) {
-            window.location.href = `/customer/products?storeId=${storeId}`;
-        }
-    
-        // Function to log out the user
-        function logout() {
-            localStorage.removeItem('token');
-            window.location.href = '/';
-        }
-    </script>
-    
+        <section class="discovery-section">
+            <h2 class="section-title">Nearby Stores</h2>
+            <div class="premium-stores-grid" id="stores-container">
+                <!-- Stores will be dynamically loaded here by dashboard.js -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+
+    <!-- Custom Dashboard Logic -->
+    <script src="/customer/dashboard.js"></script>
 </body>
 </html>
