@@ -3,47 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KiranaWala - Your Local Store Hub</title>
+    <title>KiranaWala — Hyperlocal Neighborhood Commerce</title>
+    <meta name="description" content="KiranaWala connects trusted neighborhood kirana store owners with nearby customers for convenient daily essential shopping and fast local delivery.">
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="landing-page">
-    <div class="background-overlay"></div>
-    <div class="container home-container">
-        <div class="welcome-header">
-            <div class="logo-container">
-                <i class="fas fa-store"></i>
-            </div>
-            <h1>KiranaWala</h1>
-            <p class="tagline">Connecting Local Stores With Neaby Customers</p>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fas fa-shopping-basket"  ></i>
-                    <h3>Local Stores</h3>
-                    <p>Find your favorite local stores</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-truck"></i>
-                    <h3>Quick Delivery</h3>
-                    <p>Fast and reliable delivery</p>  <p></p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-hand-holding-heart"></i>
-                    <h3>Support Local</h3>
-                    <p>Help local businesses grow</p>
-                </div>
-            </div>
+<body class="editorial-entry-body">
+    <div id="accessibility-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Minimalist Editorial Navigation -->
+    <header class="entry-navbar" role="banner">
+        <div class="entry-nav-container">
+            <a href="/" class="brand-wordmark" aria-label="KiranaWala Home">
+                KiranaWala<span class="brand-wordmark-dot"></span>
+            </a>
+            <nav class="entry-nav-links" aria-label="Main Navigation">
+                <a href="#discover" class="nav-item-link">Discover</a>
+                <a href="#story" class="nav-item-link">Our Story</a>
+                <a href="#gateways" class="nav-item-link">For Stores</a>
+                <a href="/customer/login" class="btn-nav-signin">Sign In</a>
+            </nav>
         </div>
-        <div class="choice-buttons">
-            <a href="/customer/login" class="btn customer-btn">
-                <i class="fas fa-shopping-cart"></i>
-                Shop Now
-            </a>
-            <a href="/store-owner/login" class="btn store-btn">
-                <i class="fas fa-store"></i>
-                Manage Store
-            </a>
+    </header>
+
+    <!-- Cinematic 3D Visual Anchor Layer -->
+    <div id="kirana-3d-stage" class="kirana-3d-stage" aria-hidden="true">
+        <canvas id="kirana-3d-canvas" class="kirana-3d-canvas"></canvas>
+        <div id="kirana-3d-fallback" class="kirana-3d-fallback" style="display: none;">
+            <div class="fallback-bag-graphic">🛍️</div>
         </div>
     </div>
+
+    <main role="main">
+        <!-- Magazine Cover Hero Section -->
+        <section class="entry-hero-section" aria-labelledby="hero-display-heading">
+            <div class="entry-hero-bg"></div>
+            <div class="entry-hero-content fade-up-init">
+                <span class="hero-editorial-badge">01 — NEIGHBORHOOD COMMERCE</span>
+                <h1 id="hero-display-heading" class="hero-title-display">
+                    YOUR LOCAL STORE.<br>
+                    <span class="hero-title-highlight">CLOSER THAN EVER.</span>
+                </h1>
+                <p class="hero-subtitle-text">
+                    Connecting verified neighborhood kirana stores with nearby customers for fast, reliable daily essential shopping and local delivery.
+                </p>
+                <div class="hero-cta-group">
+                    <a href="/customer/login" class="btn-editorial-primary" aria-label="Shop Now as Customer">
+                        SHOP NOW →
+                    </a>
+                    <a href="/store-owner/login" class="btn-editorial-secondary" aria-label="Manage Store as Owner">
+                        MANAGE STORE →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Continuous Scroll Story Journey -->
+        <section id="discover" class="editorial-story-container">
+            
+            <!-- 01 DISCOVER LOCAL -->
+            <article class="story-stage-row fade-up-init">
+                <div class="story-text-column">
+                    <span class="story-number-badge">01</span>
+                    <h2 class="story-headline-title">THE STORE AROUND THE CORNER SHOULD NEVER FEEL FAR AWAY.</h2>
+                    <p class="story-body-text">
+                        Explore verified kirana shops, sweet stores, and daily essential vendors right in your immediate locality. Discover live product inventory listed directly by your neighborhood merchant.
+                    </p>
+                    <a href="/customer/login" class="story-action-link">Explore Local Stores →</a>
+                </div>
+                <div class="story-visual-column">
+                    <div class="story-image-card">
+                        <img src="/images/store-background.jpg" alt="Local Kirana Store Interior" class="story-card-img" onerror="this.onerror=null; this.src='/images/hero-standing.jpg';">
+                        <div class="story-image-tag">01 / Verified Neighborhood Merchants</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 02 SHOP LOCAL -->
+            <article class="story-stage-row row-reversed fade-up-init">
+                <div class="story-text-column">
+                    <span class="story-number-badge">02</span>
+                    <h2 class="story-headline-title">EVERYDAY ESSENTIALS FROM HAND-PICKED LOCAL KIRANAS.</h2>
+                    <p class="story-body-text">
+                        From fragrant basmati rice, lentils, and cold-pressed cooking oils to whole authentic spices and daily household staples, build your cart directly from trusted neighborhood store owners.
+                    </p>
+                    <a href="/customer/login" class="story-action-link">Browse Essentials →</a>
+                </div>
+                <div class="story-visual-column">
+                    <div class="story-image-card">
+                        <img src="/images/essentials-editorial.jpg" alt="Authentic Indian Grocery Essentials Spread" class="story-card-img" onerror="this.onerror=null; this.src='/images/store-background.jpg';">
+                        <div class="story-image-tag">02 / Spices, Grains & Daily Staples</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 03 GET IT HOME -->
+            <article class="story-stage-row fade-up-init">
+                <div class="story-text-column">
+                    <span class="story-number-badge">03</span>
+                    <h2 class="story-headline-title">LOCAL SHOPPING. DELIVERED DIRECTLY TO YOUR DOORSTEP.</h2>
+                    <p class="story-body-text">
+                        Simple, transparent local delivery connecting your home with nearby stores. Track order statuses seamlessly from placed to completed without long delivery waits.
+                    </p>
+                    <a href="/customer/login" class="story-action-link">Order Essentials Now →</a>
+                </div>
+                <div class="story-visual-column">
+                    <div class="story-image-card">
+                        <img src="/images/doorstep-delivery.jpg" alt="Warm Doorstep Grocery Delivery in Indian Home" class="story-card-img" onerror="this.onerror=null; this.src='/images/store-background.jpg';">
+                        <div class="story-image-tag">03 / Neighborhood Doorstep Delivery</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 04 KEEP IT LOCAL -->
+            <article id="story" class="story-stage-row row-reversed fade-up-init">
+                <div class="story-text-column">
+                    <span class="story-number-badge">04</span>
+                    <h2 class="story-headline-title">SUPPORT THE BUSINESSES THAT MAKE YOUR NEIGHBORHOOD WHAT IT IS.</h2>
+                    <p class="story-body-text">
+                        Every purchase made on KiranaWala empowers neighborhood family businesses, keeping local Indian commerce vibrant, prosperous, and connected.
+                    </p>
+                    <a href="/store-owner/login" class="story-action-link">Register Your Store →</a>
+                </div>
+                <div class="story-visual-column">
+                    <div class="story-image-card">
+                        <img src="/images/shopkeeper-community.jpg" alt="Proud Smiling Kirana Store Owner" class="story-card-img" onerror="this.onerror=null; this.src='/images/store-background.jpg';">
+                        <div class="story-image-tag">04 / Empowering Local Shopkeepers</div>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Dual Persona Gateway Section -->
+        <section id="gateways" class="entry-gateways-section" aria-labelledby="gateways-heading">
+            <div class="entry-section-container">
+                <div class="editorial-section-header fade-up-init">
+                    <span class="editorial-eyebrow">GET STARTED TODAY</span>
+                    <h2 id="gateways-heading" class="editorial-section-heading">Choose Your KiranaWala Experience.</h2>
+                </div>
+
+                <div class="gateways-split-grid">
+                    <!-- Shoppers Gateway -->
+                    <div class="gateway-editorial-card fade-up-init">
+                        <div>
+                            <span class="gateway-card-tag">FOR SHOPPERS</span>
+                            <h3 class="gateway-card-headline">Ready to Shop Your Neighborhood?</h3>
+                            <p class="gateway-card-text">Explore nearby kirana stores, build your shopping cart, and enjoy convenient local delivery today.</p>
+                        </div>
+                        <a href="/customer/login" class="btn-gateway-action btn-gateway-shoppers" aria-label="Shop Now for Customer Shopping">
+                            SHOP NOW →
+                        </a>
+                    </div>
+
+                    <!-- Store Owners Gateway -->
+                    <div class="gateway-editorial-card fade-up-init">
+                        <div>
+                            <span class="gateway-card-tag">FOR STORE OWNERS</span>
+                            <h3 class="gateway-card-headline">Own a Kirana Store in Your Locality?</h3>
+                            <p class="gateway-card-text">Digitize your product catalog, receive orders online, and expand your merchant reach across your neighborhood.</p>
+                        </div>
+                        <a href="/store-owner/login" class="btn-gateway-action btn-gateway-stores" aria-label="Manage Store for Store Owners">
+                            MANAGE STORE →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Minimalist Editorial Footer -->
+    <footer class="entry-editorial-footer" role="contentinfo">
+        <div class="footer-editorial-container">
+            <p class="footer-copy-text">© 2026 KiranaWala — Hyperlocal Neighborhood Commerce</p>
+            <div class="footer-editorial-links">
+                <a href="/customer/login" class="footer-editorial-link">Customer Sign In</a>
+                <a href="/store-owner/login" class="footer-editorial-link">Store Owner Portal</a>
+                <a href="#discover" class="footer-editorial-link">Discover</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Three.js Library & Cinematic 3D Visual Anchor Script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="/js/entry-3d.js"></script>
+    <script src="/js/entry.js"></script>
 </body>
 </html>

@@ -62,11 +62,12 @@
                     localStorage.setItem('storeId', result.storeId);
                     window.location.href = '/store-owner/dashboard';
                 } else {
-                    alert(result.message);
+                    const errorMsg = result.message || result.error || 'Portal authentication error. Please check your credentials.';
+                    alert(errorMsg);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred');
+                alert('An error occurred during merchant login.');
             }
         });
     </script>

@@ -94,11 +94,12 @@
                     alert('Registration successful!');
                     window.location.href = '/store-owner/login';
                 } else {
-                    alert(result.message);
+                    const errorMsg = result.message || result.error || 'Store registration failed. Please try again.';
+                    alert(errorMsg);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred');
+                alert('An error occurred during store registration.');
             }
         });
 

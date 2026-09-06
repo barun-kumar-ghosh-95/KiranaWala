@@ -67,11 +67,12 @@
                     alert('Registration successful!');
                     window.location.href = '/customer/login';
                 } else {
-                    alert(result.message);
+                    const errorMsg = result.message || result.error || 'Registration failed. Please try again.';
+                    alert(errorMsg);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred');
+                alert('An error occurred during registration.');
             }
         });
     </script>

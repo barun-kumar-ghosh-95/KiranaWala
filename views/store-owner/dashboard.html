@@ -107,7 +107,7 @@
             productsList.innerHTML = products.map(product => `
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="${product.image}" alt="${product.name}">
+                        <img src="${product.image || ''}" alt="${product.name}" onerror="this.onerror=null; this.src='/images/essentials-editorial.jpg';">
                     </div>
                     <div class="product-info">
                         <h3>${product.name}</h3>

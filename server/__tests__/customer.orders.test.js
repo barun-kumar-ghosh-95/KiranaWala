@@ -40,16 +40,18 @@ describe("Customer Order History & Management API", () => {
     await Cart.deleteMany({});
     await Order.deleteMany({});
 
+    const uid = Math.random().toString(36).substring(2, 8);
+
     customer1 = await User.create({
-      username: "orderCustomer1",
-      email: "order1@test.com",
+      username: `orderCustomer1_${uid}`,
+      email: `order1_${uid}@test.com`,
       password: "password123",
       role: "customer",
     });
 
     customer2 = await User.create({
-      username: "orderCustomer2",
-      email: "order2@test.com",
+      username: `orderCustomer2_${uid}`,
+      email: `order2_${uid}@test.com`,
       password: "password123",
       role: "customer",
     });
@@ -58,8 +60,8 @@ describe("Customer Order History & Management API", () => {
     token2 = jwt.sign({ userId: customer2._id, id: customer2._id }, JWT_SECRET);
 
     const owner = await User.create({
-      username: "ordersOwner",
-      email: "ordersOwner@test.com",
+      username: `ordersOwner_${uid}`,
+      email: `ordersOwner_${uid}@test.com`,
       password: "password123",
       role: "store-owner",
     });

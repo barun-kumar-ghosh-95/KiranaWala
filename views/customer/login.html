@@ -66,13 +66,14 @@
                 const result = await response.json();
                 if (response.ok) {
                     localStorage.setItem('token', result.token);
-                    window.location.href = '/customer/dashboard'; // Updated this line
+                    window.location.href = '/customer/dashboard';
                 } else {
-                    alert(result.message);
+                    const errorMsg = result.message || result.error || 'Login failed. Please check your credentials.';
+                    alert(errorMsg);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred');
+                alert('An error occurred during login. Please try again.');
             }
         });
     </script>
