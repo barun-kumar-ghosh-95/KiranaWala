@@ -3,6 +3,7 @@ const router = express.Router();
 const Store = require("../models/store");
 const User = require("../models/user");
 const Product = require("../models/product");
+const Order = require("../models/order");
 const jwt = require("jsonwebtoken");
 const {
   authenticateToken,
@@ -334,5 +335,174 @@ router.get("/:storeId/products", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+// =====================================================
+// STORE-OWNER ORDER MANAGEMENT ENDPOINTS
+// =====================================================
+
+const VALID_ORDER_STATUSES = ["placed", "processing", "completed", "cancelled"];
+const ALLOWED_ORDER_TRANSITIONS = {
+  placed: ["processing", "cancelled"],
+  processing: ["completed", "cancelled"],
+  completed: [],
+  cancelled: [],
+};
+
+// GET /api/store-owner/orders (also accessible via /api/store/orders)
+router.get(
+  "/orders",
+  authenticateToken,
+  requireStoreOwner,
+  async (req, res) => {
+    try {
+      const store = await Store.findOne({ owner: req.user.id });
+      if (!store) {
+        return res
+          .status(404)
+          .json({ message: "Store not found for this user" });
+      }
+
+      const { status } = req.query;
+      const filter = { store: store._id };
+
+      if (status) {
+        if (!VALID_ORDER_STATUSES.includes(status)) {
+          return res
+            .status(400)
+            .json({ message: `Invalid status filter: ${status}` });
+        }
+        filter.status = status;
+      }
+
+      const orders = await Order.find(filter)
+        .sort({ createdAt: -1 })
+        .populate("customer", "username email");
+
+      res.json(orders);
+    } catch (error) {
+      console.error("Fetch store orders error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+);
+
+// GET /api/store-owner/orders/:orderId (also accessible via /api/store/orders/:orderId)
+router.get(
+  "/orders/:orderId",
+  authenticateToken,
+  requireStoreOwner,
+  async (req, res) => {
+    try {
+      const { orderId } = req.params;
+
+      if (!orderId || !mongoose.Types.ObjectId.isValid(orderId)) {
+        return res.status(400).json({ message: "Invalid order ID" });
+      }
+
+      const store = await Store.findOne({ owner: req.user.id });
+      if (!store) {
+        return res
+          .status(404)
+          .json({ message: "Store not found for this user" });
+      }
+
+      const order = await Order.findById(orderId).populate(
+        "customer",
+        "username email",
+      );
+
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+      if (order.store.toString() !== store._id.toString()) {
+        return res.status(403).json({
+          message: "Access denied: You do not own this order's store",
+        });
+      }
+
+      res.json(order);
+    } catch (error) {
+      console.error("Fetch store order details error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+);
+
+// PATCH /api/store-owner/orders/:orderId/status (also accessible via /api/store/orders/:orderId/status)
+router.patch(
+  "/orders/:orderId/status",
+  authenticateToken,
+  requireStoreOwner,
+  async (req, res) => {
+    try {
+      const { orderId } = req.params;
+      const { status } = req.body;
+
+      if (!orderId || !mongoose.Types.ObjectId.isValid(orderId)) {
+        return res.status(400).json({ message: "Invalid order ID" });
+      }
+
+      if (!status || !VALID_ORDER_STATUSES.includes(status)) {
+        return res.status(400).json({
+          message: `Invalid status: ${status}. Must be one of: ${VALID_ORDER_STATUSES.join(", ")}`,
+        });
+      }
+
+      const store = await Store.findOne({ owner: req.user.id });
+      if (!store) {
+        return res
+          .status(404)
+          .json({ message: "Store not found for this user" });
+      }
+
+      const order = await Order.findById(orderId);
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+      if (order.store.toString() !== store._id.toString()) {
+        return res.status(403).json({
+          message: "Access denied: You do not own this order's store",
+        });
+      }
+
+      const currentStatus = order.status;
+      const allowedNextStatuses =
+        ALLOWED_ORDER_TRANSITIONS[currentStatus] || [];
+
+      if (!allowedNextStatuses.includes(status)) {
+        return res.status(400).json({
+          message: `Invalid status transition: Cannot transition order from '${currentStatus}' to '${status}'. Allowed transitions from '${currentStatus}': [${allowedNextStatuses.join(", ")}]`,
+        });
+      }
+
+      // If transitioning to cancelled, restore stock for products
+      if (status === "cancelled") {
+        for (const item of order.items) {
+          if (item.product) {
+            await Product.updateOne(
+              { _id: item.product },
+              { $inc: { stock: item.quantity } },
+            );
+          }
+        }
+      }
+
+      order.status = status;
+      await order.save();
+
+      await order.populate("customer", "username email");
+
+      res.json({
+        message: `Order status updated to ${status}`,
+        order,
+      });
+    } catch (error) {
+      console.error("Update store order status error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+);
 
 module.exports = router;

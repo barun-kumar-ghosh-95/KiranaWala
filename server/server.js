@@ -30,21 +30,50 @@ app.use(express.static(path.join(__dirname, "../views")));
 // MONGODB CONNECTION
 // =====================================================
 
-if (!process.env.MONGO_URI) {
-  console.error("ERROR: MONGO_URI is missing from server/.env");
-} else {
-  mongoose
-    .connect(process.env.MONGO_URI, {
-      serverSelectionTimeoutMS: 8000,
-    })
-    .then(() => {
+const connectMongo = async () => {
+  const primaryUri = process.env.MONGO_URI;
+  const isProduction = process.env.NODE_ENV === "production";
+  const localUri = "mongodb://127.0.0.1:27017/kiranawala";
+
+  if (!primaryUri) {
+    if (isProduction) {
+      console.error("FATAL: MONGO_URI is missing in production environment.");
+      return;
+    }
+    console.warn(
+      "MONGO_URI not specified. Using local MongoDB for development...",
+    );
+  } else {
+    try {
+      await mongoose.connect(primaryUri, {
+        serverSelectionTimeoutMS: isProduction ? 8000 : 3000,
+      });
       console.log("Connected to MongoDB successfully");
-    })
-    .catch((err) => {
-      console.error("MongoDB connection failed:");
-      console.error(err.message);
-    });
-}
+      return;
+    } catch (err) {
+      console.error("Primary MongoDB connection failed:", err.message);
+      if (isProduction) {
+        console.error(
+          "FATAL: Production database connection failed. Local fallback is disabled in production.",
+        );
+        return;
+      }
+      console.warn("Falling back to local MongoDB for development...");
+    }
+  }
+
+  // Local MongoDB fallback is strictly allowed only in non-production environments
+  if (!isProduction) {
+    try {
+      await mongoose.connect(localUri, { serverSelectionTimeoutMS: 3000 });
+      console.log("Connected to local MongoDB successfully");
+    } catch (err) {
+      console.error("Local MongoDB connection failed:", err.message);
+    }
+  }
+};
+
+connectMongo();
 
 // MongoDB connection status
 mongoose.connection.on("connected", () => {
@@ -69,6 +98,7 @@ mongoose.connection.on("reconnected", () => {
 
 app.use("/api/customer", customerRoutes);
 app.use("/api/store", storeRoutes);
+app.use("/api/store-owner", storeRoutes);
 
 // =====================================================
 // PAGE ROUTES

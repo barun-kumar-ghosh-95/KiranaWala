@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store Dashboard</title>
+    <title>Store Dashboard — KiranaWala</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -12,15 +12,80 @@
         <header class="dashboard-header">
             <div class="header-content">
                 <h2>Store Dashboard</h2>
-                <button id="addProductBtn" onclick="showAddProductModal()">
+                <button id="addProductBtn" onclick="showAddProductModal()" style="display: none;">
                     <i class="fas fa-plus"></i> Add Product
                 </button>
             </div>
             <button id="logoutBtn" onclick="logout()">Logout</button>
         </header>
 
-        <div class="products-grid" id="productsList">
+        <!-- Navigation Tabs: Orders & Products -->
+        <div class="dashboard-nav-tabs" role="tablist">
+            <button class="dashboard-tab-btn active" id="tabOrdersBtn" onclick="switchDashboardTab('orders')" role="tab" aria-selected="true">
+                <i class="fas fa-clipboard-list"></i> Orders <span class="tab-badge" id="ordersTabBadge">0</span>
+            </button>
+            <button class="dashboard-tab-btn" id="tabProductsBtn" onclick="switchDashboardTab('products')" role="tab" aria-selected="false">
+                <i class="fas fa-boxes"></i> Products <span class="tab-badge" id="productsTabBadge">0</span>
+            </button>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- ORDER MANAGEMENT SECTION -->
+        <!-- ============================================== -->
+        <section id="ordersSection" class="orders-section">
+            <div class="orders-filter-bar">
+                <div class="filter-pills-group" id="filterPillsGroup">
+                    <button class="filter-pill active" data-filter="all" onclick="setOrdersFilter('all')">
+                        All <span class="pill-count" id="countAll">0</span>
+                    </button>
+                    <button class="filter-pill" data-filter="placed" onclick="setOrdersFilter('placed')">
+                        Placed <span class="pill-count" id="countPlaced">0</span>
+                    </button>
+                    <button class="filter-pill" data-filter="processing" onclick="setOrdersFilter('processing')">
+                        Processing <span class="pill-count" id="countProcessing">0</span>
+                    </button>
+                    <button class="filter-pill" data-filter="completed" onclick="setOrdersFilter('completed')">
+                        Completed <span class="pill-count" id="countCompleted">0</span>
+                    </button>
+                    <button class="filter-pill" data-filter="cancelled" onclick="setOrdersFilter('cancelled')">
+                        Cancelled <span class="pill-count" id="countCancelled">0</span>
+                    </button>
+                </div>
+                <button class="refresh-orders-btn" onclick="loadOrders(true)">
+                    <i class="fas fa-sync-alt" id="refreshOrdersIcon"></i> Refresh Orders
+                </button>
+            </div>
+
+            <!-- Orders List -->
+            <div class="orders-list" id="ordersListContainer">
+                <div class="empty-state-box">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading incoming orders...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- PRODUCTS MANAGEMENT SECTION -->
+        <!-- ============================================== -->
+        <div class="products-grid" id="productsList" style="display: none;">
             <!-- Products will be loaded here -->
+        </div>
+
+        <!-- ============================================== -->
+        <!-- ORDER DETAILS MODAL -->
+        <!-- ============================================== -->
+        <div id="orderDetailsModal" class="modal">
+            <div class="modal-content order-modal-content">
+                <span class="close-modal" onclick="closeOrderModal()">&times;</span>
+                <div id="orderModalFeedbackAlert" class="action-feedback-alert"></div>
+                <div id="orderModalBody">
+                    <div style="text-align:center; padding: 40px 0;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #64748b;"></i>
+                        <p style="margin-top: 10px; color: #64748b;">Loading order details...</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Add Product Modal -->
@@ -69,8 +134,445 @@
 
     <script>
         let currentProductId = null;
+        let currentOrders = [];
+        let currentFilter = 'all';
+        let currentActiveTab = 'orders';
+        let activeModalOrderId = null;
 
-        // Modal functions
+        // Tab Switching
+        function switchDashboardTab(tab) {
+            currentActiveTab = tab;
+            const tabOrdersBtn = document.getElementById('tabOrdersBtn');
+            const tabProductsBtn = document.getElementById('tabProductsBtn');
+            const ordersSection = document.getElementById('ordersSection');
+            const productsList = document.getElementById('productsList');
+            const addProductBtn = document.getElementById('addProductBtn');
+
+            if (tab === 'orders') {
+                tabOrdersBtn.classList.add('active');
+                tabOrdersBtn.setAttribute('aria-selected', 'true');
+                tabProductsBtn.classList.remove('active');
+                tabProductsBtn.setAttribute('aria-selected', 'false');
+
+                ordersSection.style.display = 'block';
+                productsList.style.display = 'none';
+                addProductBtn.style.display = 'none';
+
+                loadOrders();
+            } else {
+                tabProductsBtn.classList.add('active');
+                tabProductsBtn.setAttribute('aria-selected', 'true');
+                tabOrdersBtn.classList.remove('active');
+                tabOrdersBtn.setAttribute('aria-selected', 'false');
+
+                ordersSection.style.display = 'none';
+                productsList.style.display = 'grid';
+                addProductBtn.style.display = 'flex';
+
+                loadProducts();
+            }
+        }
+
+        // ==============================================
+        // ORDER MANAGEMENT LOGIC
+        // ==============================================
+
+        async function loadOrders(isManualRefresh = false) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/store-owner/login';
+                return;
+            }
+
+            const refreshIcon = document.getElementById('refreshOrdersIcon');
+            if (isManualRefresh && refreshIcon) {
+                refreshIcon.classList.add('fa-spin');
+            }
+
+            try {
+                const response = await fetch('/api/store-owner/orders', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/store-owner/login';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch orders');
+                }
+
+                currentOrders = await response.json();
+                updateOrderCounters(currentOrders);
+                renderOrders();
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                const container = document.getElementById('ordersListContainer');
+                container.innerHTML = `
+                    <div class="empty-state-box">
+                        <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i>
+                        <p style="color: #dc2626; font-weight: 600;">Failed to load orders.</p>
+                        <button class="refresh-orders-btn" onclick="loadOrders()" style="margin-top: 10px;">
+                            <i class="fas fa-redo"></i> Try Again
+                        </button>
+                    </div>
+                `;
+            } finally {
+                if (isManualRefresh && refreshIcon) {
+                    setTimeout(() => refreshIcon.classList.remove('fa-spin'), 400);
+                }
+            }
+        }
+
+        function updateOrderCounters(orders) {
+            const counts = {
+                all: orders.length,
+                placed: 0,
+                processing: 0,
+                completed: 0,
+                cancelled: 0
+            };
+
+            orders.forEach(order => {
+                if (counts[order.status] !== undefined) {
+                    counts[order.status]++;
+                }
+            });
+
+            document.getElementById('ordersTabBadge').textContent = counts.all;
+            document.getElementById('countAll').textContent = counts.all;
+            document.getElementById('countPlaced').textContent = counts.placed;
+            document.getElementById('countProcessing').textContent = counts.processing;
+            document.getElementById('countCompleted').textContent = counts.completed;
+            document.getElementById('countCancelled').textContent = counts.cancelled;
+        }
+
+        function setOrdersFilter(status) {
+            currentFilter = status;
+            const filterButtons = document.querySelectorAll('#filterPillsGroup .filter-pill');
+            filterButtons.forEach(btn => {
+                if (btn.getAttribute('data-filter') === status) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            renderOrders();
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('ordersListContainer');
+            const filteredOrders = currentFilter === 'all'
+                ? currentOrders
+                : currentOrders.filter(o => o.status === currentFilter);
+
+            if (filteredOrders.length === 0) {
+                const statusLabel = currentFilter === 'all' ? '' : ` (${currentFilter.toUpperCase()})`;
+                container.innerHTML = `
+                    <div class="empty-state-box">
+                        <i class="fas fa-inbox"></i>
+                        <h3 style="margin: 0 0 6px 0; color: #1e293b;">No Orders Found${statusLabel}</h3>
+                        <p style="margin: 0;">There are currently no orders in this status category.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredOrders.map(order => {
+                const orderDate = new Date(order.createdAt).toLocaleString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                const customerName = (order.deliveryAddress && order.deliveryAddress.fullName) || (order.customer && order.customer.username) || 'Customer';
+                const customerPhone = (order.deliveryAddress && order.deliveryAddress.phone) || '';
+                const itemsCount = (order.items || []).reduce((acc, i) => acc + (i.quantity || 1), 0);
+                const orderShortId = order._id.substring(order._id.length - 8).toUpperCase();
+
+                return `
+                    <div class="owner-order-card" id="order-card-${order._id}">
+                        <div class="order-col-id">
+                            <span class="order-id-label">Order ID</span>
+                            #${orderShortId}
+                        </div>
+                        <div class="order-col-customer">
+                            <strong>${escapeHtml(customerName)}</strong>
+                            ${customerPhone ? `<span class="customer-phone"><i class="fas fa-phone-alt"></i> ${escapeHtml(customerPhone)}</span>` : ''}
+                        </div>
+                        <div class="order-col-date">
+                            <i class="far fa-clock"></i> ${orderDate}
+                        </div>
+                        <div class="order-col-items">
+                            <i class="fas fa-box"></i> ${itemsCount} ${itemsCount === 1 ? 'item' : 'items'}
+                        </div>
+                        <div class="order-col-total">
+                            ₹${order.total}
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; justify-content: flex-end;">
+                            <span class="order-status-badge status-${order.status}">
+                                <i class="fas ${getStatusIcon(order.status)}"></i>
+                                ${order.status}
+                            </span>
+                            <button class="view-order-btn" onclick="openOrderModal('${order._id}')">
+                                <i class="fas fa-eye"></i> Details
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getStatusIcon(status) {
+            switch(status) {
+                case 'placed': return 'fa-clock';
+                case 'processing': return 'fa-cog fa-spin';
+                case 'completed': return 'fa-check-circle';
+                case 'cancelled': return 'fa-times-circle';
+                default: return 'fa-circle';
+            }
+        }
+
+        // ==============================================
+        // ORDER MODAL & STATUS MANAGEMENT
+        // ==============================================
+
+        async function openOrderModal(orderId) {
+            activeModalOrderId = orderId;
+            const modal = document.getElementById('orderDetailsModal');
+            const modalBody = document.getElementById('orderModalBody');
+            const alertBox = document.getElementById('orderModalFeedbackAlert');
+
+            alertBox.style.display = 'none';
+            alertBox.className = 'action-feedback-alert';
+            alertBox.textContent = '';
+
+            modalBody.innerHTML = `
+                <div style="text-align:center; padding: 40px 0;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #64748b;"></i>
+                    <p style="margin-top: 10px; color: #64748b;">Loading order snapshot...</p>
+                </div>
+            `;
+            modal.style.display = 'block';
+
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`/api/store-owner/orders/${orderId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) {
+                    const errData = await res.json();
+                    throw new Error(errData.message || 'Failed to fetch order details');
+                }
+
+                const order = await res.json();
+                renderOrderModalContent(order);
+            } catch (err) {
+                console.error('Error fetching order details:', err);
+                modalBody.innerHTML = `
+                    <div style="text-align:center; padding: 30px 0; color: #dc2626;">
+                        <i class="fas fa-exclamation-circle" style="font-size: 2.5rem; margin-bottom: 12px;"></i>
+                        <p style="font-weight: 600;">${escapeHtml(err.message)}</p>
+                        <button class="refresh-orders-btn" onclick="openOrderModal('${orderId}')" style="margin-top: 10px;">
+                            <i class="fas fa-redo"></i> Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderOrderModalContent(order) {
+            const modalBody = document.getElementById('orderModalBody');
+            const orderDate = new Date(order.createdAt).toLocaleString('en-IN', {
+                dateStyle: 'full',
+                timeStyle: 'medium'
+            });
+            const customerName = (order.deliveryAddress && order.deliveryAddress.fullName) || (order.customer && order.customer.username) || 'N/A';
+            const customerEmail = (order.customer && order.customer.email) || 'N/A';
+            const customerPhone = (order.deliveryAddress && order.deliveryAddress.phone) || 'N/A';
+            const deliveryAddress = order.deliveryAddress ? `
+                ${escapeHtml(order.deliveryAddress.address || '')},
+                ${escapeHtml(order.deliveryAddress.city || '')} - ${escapeHtml(order.deliveryAddress.pincode || '')}
+            ` : 'N/A';
+
+            let actionButtonsHtml = '';
+            if (order.status === 'placed') {
+                actionButtonsHtml = `
+                    <button class="order-action-btn btn-processing" id="btnActionProcess" onclick="updateOrderStatus('${order._id}', 'processing')">
+                        <i class="fas fa-play"></i> Start Processing
+                    </button>
+                    <button class="order-action-btn btn-cancel" id="btnActionCancel" onclick="updateOrderStatus('${order._id}', 'cancelled')">
+                        <i class="fas fa-ban"></i> Cancel Order
+                    </button>
+                `;
+            } else if (order.status === 'processing') {
+                actionButtonsHtml = `
+                    <button class="order-action-btn btn-complete" id="btnActionComplete" onclick="updateOrderStatus('${order._id}', 'completed')">
+                        <i class="fas fa-check-circle"></i> Mark Completed
+                    </button>
+                    <button class="order-action-btn btn-cancel" id="btnActionCancel" onclick="updateOrderStatus('${order._id}', 'cancelled')">
+                        <i class="fas fa-ban"></i> Cancel Order
+                    </button>
+                `;
+            } else if (order.status === 'completed') {
+                actionButtonsHtml = `
+                    <div class="status-terminal-note completed">
+                        <i class="fas fa-check-double"></i> This order is completed.
+                    </div>
+                `;
+            } else if (order.status === 'cancelled') {
+                actionButtonsHtml = `
+                    <div class="status-terminal-note cancelled">
+                        <i class="fas fa-times-circle"></i> This order was cancelled. Stock has been restored.
+                    </div>
+                `;
+            }
+
+            modalBody.innerHTML = `
+                <div class="order-modal-header">
+                    <div>
+                        <h3 class="order-modal-title">Order #${order._id.substring(order._id.length - 8).toUpperCase()}</h3>
+                        <div class="order-modal-subtitle">Full ID: <code>${order._id}</code> &bull; Placed on ${orderDate}</div>
+                    </div>
+                    <span class="order-status-badge status-${order.status}">
+                        <i class="fas ${getStatusIcon(order.status)}"></i> ${order.status}
+                    </span>
+                </div>
+
+                <!-- Customer & Delivery Information -->
+                <div class="order-detail-card">
+                    <h4><i class="fas fa-user-check"></i> Customer & Delivery Details</h4>
+                    <div class="order-info-grid">
+                        <div>
+                            <div class="order-info-label">Customer Name</div>
+                            <div class="order-info-value">${escapeHtml(customerName)}</div>
+                        </div>
+                        <div>
+                            <div class="order-info-label">Phone Number</div>
+                            <div class="order-info-value">${escapeHtml(customerPhone)}</div>
+                        </div>
+                        <div>
+                            <div class="order-info-label">Account Email</div>
+                            <div class="order-info-value">${escapeHtml(customerEmail)}</div>
+                        </div>
+                        <div>
+                            <div class="order-info-label">Delivery Address</div>
+                            <div class="order-info-value">${deliveryAddress}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historical Items Snapshot -->
+                <div class="order-detail-card">
+                    <h4><i class="fas fa-shopping-basket"></i> Ordered Products (Purchase Snapshot)</h4>
+                    <table class="order-items-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th style="text-align: right;">Unit Price</th>
+                                <th style="text-align: center;">Qty</th>
+                                <th style="text-align: right;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${(order.items || []).map(item => `
+                                <tr>
+                                    <td>
+                                        <strong>${escapeHtml(item.productNameSnapshot || 'Product')}</strong>
+                                    </td>
+                                    <td style="text-align: right;">₹${item.unitPrice}</td>
+                                    <td style="text-align: center;">${item.quantity}</td>
+                                    <td style="text-align: right;">₹${item.subtotal}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div class="order-financials-summary">
+                        <div class="financial-row">
+                            <span>Subtotal</span>
+                            <span>₹${order.subtotal}</span>
+                        </div>
+                        <div class="financial-row">
+                            <span>Delivery Fee</span>
+                            <span>₹${order.deliveryFee || 0}</span>
+                        </div>
+                        <div class="financial-row total-row">
+                            <span>Grand Total</span>
+                            <span>₹${order.total}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="order-action-bar" id="orderModalActionBar">
+                    ${actionButtonsHtml}
+                </div>
+            `;
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            const token = localStorage.getItem('token');
+            const alertBox = document.getElementById('orderModalFeedbackAlert');
+            const actionBar = document.getElementById('orderModalActionBar');
+
+            if (newStatus === 'cancelled') {
+                const confirmed = confirm('Are you sure you want to cancel this order? Stock will be restored.');
+                if (!confirmed) return;
+            }
+
+            // Disable buttons and show spinner
+            const buttons = actionBar.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+            alertBox.style.display = 'none';
+
+            try {
+                const response = await fetch(`/api/store-owner/orders/${orderId}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to update order status');
+                }
+
+                alertBox.className = 'action-feedback-alert success';
+                alertBox.textContent = `Order successfully updated to ${newStatus.toUpperCase()}!`;
+                alertBox.style.display = 'block';
+
+                // Reload orders in background and re-render modal with updated order
+                await loadOrders();
+                renderOrderModalContent(data.order);
+            } catch (error) {
+                console.error('Error updating order status:', error);
+                alertBox.className = 'action-feedback-alert error';
+                alertBox.textContent = error.message;
+                alertBox.style.display = 'block';
+                buttons.forEach(btn => btn.disabled = false);
+            }
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderDetailsModal').style.display = 'none';
+            activeModalOrderId = null;
+        }
+
+        // ==============================================
+        // PRODUCT CRUD FUNCTIONS (PRESERVED)
+        // ==============================================
+
         function showAddProductModal() {
             document.getElementById('addProductModal').style.display = 'block';
         }
@@ -90,12 +592,12 @@
             currentProductId = null;
         }
 
-        // Products CRUD operations
         async function loadProducts() {
             try {
                 const storeId = localStorage.getItem('storeId');
                 const response = await fetch(`/api/store/products/${storeId}`);
                 const products = await response.json();
+                document.getElementById('productsTabBadge').textContent = products.length || 0;
                 displayProducts(products);
             } catch (error) {
                 console.error('Error loading products:', error);
@@ -110,9 +612,9 @@
                         <img src="${product.image || ''}" alt="${product.name}" onerror="this.onerror=null; this.src='/images/essentials-editorial.jpg';">
                     </div>
                     <div class="product-info">
-                        <h3>${product.name}</h3>
+                        <h3>${escapeHtml(product.name)}</h3>
                         <p class="product-price">₹${product.price}</p>
-                        <p class="product-description">${product.description}</p>
+                        <p class="product-description">${escapeHtml(product.description)}</p>
                         <div class="product-actions">
                             <button onclick="editProduct('${product._id}')" class="edit-btn">
                                 <i class="fas fa-edit"></i> Edit
@@ -128,16 +630,11 @@
 
         async function editProduct(productId) {
             try {
-                const storeId = localStorage.getItem('storeId');
                 const response = await fetch(`/api/store/products/${productId}`);
-
-                
                 if (!response.ok) {
                     throw new Error('Failed to fetch product');
                 }
-                
                 const product = await response.json();
-                console.log('Product data:', product); // For debugging
                 
                 document.getElementById('editProductId').value = productId || "";
                 document.getElementById('editProductName').value = product.name || "";
@@ -155,11 +652,9 @@
         document.getElementById('editProductForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const productId = document.getElementById('editProductId').value;
-            const storeId = localStorage.getItem('storeId');
             
             try {
                 const response = await fetch(`/api/store/products/${productId}`, {
-
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -212,7 +707,6 @@
             }
         }
 
-        // Event Listeners
         document.getElementById('addProductForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
@@ -244,58 +738,52 @@
             }
         });
 
-        // document.getElementById('editProductForm').addEventListener('submit', async (e) => {
-        //     e.preventDefault();
-        //     const productId = document.getElementById('editProductId').value;
-        //     const storeId = localStorage.getItem('storeId');
-            
-        //     try {
-        //         const response = await fetch(`/api/store/products/${productId}/${storeId}`, {
-        //             method: 'PUT',
-        //             headers: {
-        //                 'Content-Type': 'application/json'
-        //             },
-        //             body: JSON.stringify({
-        //                 name: document.getElementById('editProductName').value,
-        //                 price: parseFloat(document.getElementById('editProductPrice').value),
-        //                 description: document.getElementById('editProductDescription').value,
-        //                 image: document.getElementById('editProductImage').value
-        //             })
-        //         });
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
 
-        //         if (response.ok) {
-        //             closeEditModal();
-        //             loadProducts();
-        //         } else {
-        //             const error = await response.json();
-        //             alert(error.message);
-        //         }
-        //     } catch (error) {
-        //         console.error('Error updating product:', error);
-        //         alert('Failed to update product');
-        //     }
-        // });
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('storeId');
+            window.location.href = '/';
+        }
 
-        // Initialize
+        // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
-            const storeId = localStorage.getItem('storeId');
-            if (!storeId) {
+            const token = localStorage.getItem('token');
+            if (!token) {
                 window.location.href = '/store-owner/login';
                 return;
             }
-            loadProducts();
+
+            // Default to Orders tab
+            switchDashboardTab('orders');
+
+            // Also load products count in background
+            const storeId = localStorage.getItem('storeId');
+            if (storeId) {
+                fetch(`/api/store/products/${storeId}`)
+                    .then(res => res.json())
+                    .then(products => {
+                        const count = Array.isArray(products) ? products.length : 0;
+                        document.getElementById('productsTabBadge').textContent = count;
+                    })
+                    .catch(() => {});
+            }
         });
 
         // Close modals when clicking outside
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
+                activeModalOrderId = null;
             }
-        }
-
-        function logout() {
-            localStorage.removeItem('token');
-            window.location.href = '/'; // Changed this line to redirect to index page
         }
     </script>
 </body>
