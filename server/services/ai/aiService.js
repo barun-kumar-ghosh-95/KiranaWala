@@ -131,11 +131,42 @@ const TOOL_DECLARATIONS = [
       required: ["productId"],
     },
   },
+  {
+    name: "buildShoppingIntentBasket",
+    description:
+      "Build a complete single-store grocery basket matching a customer's shopping intent (e.g., 'tea for 5', 'breakfast for 4', 'snacks for movie night', 'groceries under ₹200').",
+    parameters: {
+      type: "OBJECT",
+      properties: {
+        purpose: {
+          type: "STRING",
+          description:
+            "The meal or purpose (e.g., 'make tea', 'breakfast', 'movie night snacks')",
+        },
+        servings: {
+          type: "NUMBER",
+          description: "Number of people/servings",
+        },
+        budget: {
+          type: "NUMBER",
+          description: "Maximum budget in INR",
+        },
+        items: {
+          type: "ARRAY",
+          items: { type: "STRING" },
+          description: "Required ingredient names",
+        },
+      },
+      required: ["purpose"],
+    },
+  },
 ];
 
 // ---------------------------------------------------------------------------
 // Tool Executor Map
 // ---------------------------------------------------------------------------
+
+const { parseShoppingIntent, buildIntentBasket } = require("./aiIntentBasket");
 
 /**
  * Maps tool declaration names to their read-only aiTools.js implementations.
@@ -146,6 +177,7 @@ const TOOL_EXECUTORS = {
   getNearbyStores: aiTools.getNearbyStores,
   getProductDetails: aiTools.getProductDetails,
   checkProductAvailability: aiTools.checkProductAvailability,
+  buildShoppingIntentBasket: aiTools.buildShoppingIntentBasket,
 };
 
 // ---------------------------------------------------------------------------
@@ -314,6 +346,48 @@ async function processChat({ message, userContext = {} }) {
     hasContext: Object.keys(userContext).length > 0,
   });
 
+  const conversation = createConversation({
+    systemPrompt: KIRANAWALA_SYSTEM_PROMPT,
+    tools: TOOL_DECLARATIONS,
+  });
+
+  // --- Shopping Intent Handler ---
+  const parsedIntent = parseShoppingIntent(message);
+
+  if (parsedIntent.isIntent) {
+    if (parsedIntent.isAmbiguous) {
+      logAIEvent("AI_RESPONSE", { ambiguousIntent: true });
+      return {
+        message: parsedIntent.clarificationPrompt,
+        products: [],
+        toolsUsed: [],
+        intent: null,
+        basket: null,
+      };
+    }
+
+    const intentResult = await buildIntentBasket({
+      purpose: parsedIntent.purpose,
+      servings: parsedIntent.servings,
+      budget: parsedIntent.budget,
+      requiredItems: parsedIntent.requiredItems,
+      userContext,
+    });
+
+    logAIEvent("AI_RESPONSE", {
+      intentBasket: true,
+      productsCount: intentResult.products.length,
+    });
+
+    return {
+      message: intentResult.message,
+      products: intentResult.products,
+      toolsUsed: ["buildShoppingIntentBasket"],
+      intent: intentResult.intent,
+      basket: intentResult.basket,
+    };
+  }
+
   const toolsUsed = [];
   const candidateProductIds = new Set();
 
@@ -321,11 +395,6 @@ async function processChat({ message, userContext = {} }) {
   if (userContext && Object.keys(userContext).length > 0) {
     currentPayload = `[Context: ${JSON.stringify(userContext)}]\n\n${message}`;
   }
-
-  const conversation = createConversation({
-    systemPrompt: KIRANAWALA_SYSTEM_PROMPT,
-    tools: TOOL_DECLARATIONS,
-  });
 
   try {
     for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {

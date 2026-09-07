@@ -433,6 +433,135 @@ router.delete("/cart", authenticateToken, async (req, res) => {
   }
 });
 
+// POST /api/customer/cart/basket - Batch Add Complete Intent Basket
+router.post("/cart/basket", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id || req.user.userId;
+    const { storeId, items, clearExisting } = req.body;
+
+    if (!storeId || !mongoose.Types.ObjectId.isValid(storeId)) {
+      return res.status(400).json({ message: "Invalid or missing storeId" });
+    }
+
+    if (!Array.isArray(items) || items.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "items must be a non-empty array" });
+    }
+
+    const targetStore = await Store.findById(storeId);
+    if (!targetStore) {
+      return res.status(404).json({ message: "Target store not found" });
+    }
+
+    let cart = await Cart.findOne({ user: userId });
+    if (!cart) {
+      cart = new Cart({ user: userId, items: [], store: storeId });
+    }
+
+    // Cross-store conflict handling
+    if (
+      cart.store &&
+      cart.items.length > 0 &&
+      cart.store.toString() !== storeId.toString()
+    ) {
+      if (!clearExisting) {
+        return res.status(400).json({
+          message:
+            "Your cart contains items from another store. Clear your cart to add this basket.",
+          code: "CROSS_STORE_CONFLICT",
+          existingStoreId: cart.store,
+          targetStoreId: storeId,
+        });
+      } else {
+        cart.items = [];
+      }
+    }
+
+    // Verify all products in database
+    for (const item of items) {
+      const productId = item.productId || item._id;
+      const quantity = parseInt(item.quantity, 10) || 1;
+
+      if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+        return res
+          .status(400)
+          .json({ message: "Invalid product ID in basket" });
+      }
+
+      const product = await Product.findById(productId);
+      if (!product) {
+        return res
+          .status(404)
+          .json({ message: "A product in this basket no longer exists" });
+      }
+
+      if (product.store.toString() !== storeId.toString()) {
+        return res.status(400).json({
+          message: `Product '${product.name}' does not belong to target store`,
+        });
+      }
+
+      if (product.available === false || product.stock <= 0) {
+        return res.status(400).json({
+          message: `Product '${product.name}' is currently out of stock.`,
+          outOfStockProduct: product.name,
+        });
+      }
+
+      const existingIndex = cart.items.findIndex(
+        (i) => i.product.toString() === productId.toString(),
+      );
+
+      const existingQty =
+        existingIndex > -1 ? cart.items[existingIndex].quantity : 0;
+      const targetQty = clearExisting ? quantity : existingQty + quantity;
+
+      if (targetQty > product.stock) {
+        return res.status(400).json({
+          message: `Only ${product.stock} units of '${product.name}' are available.`,
+          availableStock: product.stock,
+        });
+      }
+
+      if (existingIndex > -1) {
+        cart.items[existingIndex].quantity = targetQty;
+      } else {
+        cart.items.push({ product: productId, quantity: targetQty });
+      }
+    }
+
+    cart.store = storeId;
+    await cart.save();
+
+    await cart.populate("items.product");
+    await cart.populate("store", "name category description");
+
+    let subtotal = 0;
+    const formattedItems = cart.items.map((i) => {
+      const itemSub = (i.product ? i.product.price : 0) * i.quantity;
+      subtotal += itemSub;
+      return {
+        _id: i._id,
+        product: i.product,
+        quantity: i.quantity,
+        subtotal: itemSub,
+      };
+    });
+
+    res.status(200).json({
+      _id: cart._id,
+      store: cart.store,
+      items: formattedItems,
+      subtotal,
+      total: subtotal,
+      message: "Complete basket added to cart successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // =====================================================
 // ORDER / CHECKOUT ENDPOINTS
 // =====================================================

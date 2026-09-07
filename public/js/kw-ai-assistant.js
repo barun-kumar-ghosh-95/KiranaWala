@@ -139,6 +139,9 @@
           <!-- Chat History -->
           <div class="kw-ai-chat-history" id="kw-ai-chat-history" aria-live="polite"></div>
 
+          <!-- Intent Basket Section -->
+          <section class="kw-ai-basket-section" id="kw-ai-basket-section" style="display:none;" aria-label="Shopping Intent Basket"></section>
+
           <!-- Live Status Indicator (IDLE, THINKING, SEARCHING, RESULTS, ERROR) -->
           <div class="kw-ai-status-bar" id="kw-ai-status-bar" style="display:none;" aria-live="polite">
             <span class="kw-ai-status-pulse"></span>
@@ -335,6 +338,13 @@
       // Append AI Response Text
       appendChatMessage('assistant', data.message || 'Here are the recommended items from nearby stores:');
       conversationContext.push({ role: 'assistant', content: data.message });
+
+      // Render Intent Basket if present
+      if (data.basket) {
+        renderIntentBasketCard(data.basket);
+      } else {
+        renderIntentBasketCard(null);
+      }
 
       // Render Verified Backend Products
       const verifiedProducts = Array.isArray(data.products) ? data.products : [];
@@ -700,6 +710,161 @@
       window.KwUI.toast(msg, type);
     } else {
       alert(msg);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Shopping Intent Basket Renderer & Action Handler
+  // ---------------------------------------------------------------------------
+
+  function renderIntentBasketCard(basket) {
+    const basketSection = document.getElementById('kw-ai-basket-section');
+    if (!basketSection) return;
+
+    if (!basket || !basket.items || basket.items.length === 0) {
+      basketSection.style.display = 'none';
+      basketSection.innerHTML = '';
+      return;
+    }
+
+    basketSection.style.display = 'block';
+    basketSection.innerHTML = '';
+
+    const card = document.createElement('div');
+    card.className = 'kw-ai-basket-card';
+
+    const header = document.createElement('div');
+    header.className = 'kw-ai-basket-header';
+    header.innerHTML = `
+      <span class="kw-ai-basket-title">🛒 Complete Basket</span>
+      <span class="kw-ai-basket-total">₹${(basket.total || 0).toLocaleString('en-IN')}</span>
+    `;
+
+    const storeInfo = document.createElement('div');
+    storeInfo.className = 'kw-ai-basket-store';
+    storeInfo.innerHTML = `🏪 <strong>${basket.storeName || 'Nearby Store'}</strong> ${basket.distanceKm ? `(${basket.distanceKm} km away)` : ''}`;
+
+    const checklist = document.createElement('ul');
+    checklist.className = 'kw-ai-checklist';
+
+    basket.items.forEach((lineItem) => {
+      const li = document.createElement('li');
+      li.className = 'kw-ai-checklist-item item-ok';
+      li.innerHTML = `<span>✓</span> <strong>${lineItem.product.name}</strong> — ₹${lineItem.product.price} (Qty: ${lineItem.quantity})`;
+      checklist.appendChild(li);
+    });
+
+    if (Array.isArray(basket.missingItems) && basket.missingItems.length > 0) {
+      basket.missingItems.forEach((item) => {
+        const li = document.createElement('li');
+        li.className = 'kw-ai-checklist-item item-missing';
+        li.innerHTML = `<span>⚠️</span> <strong>${item}</strong> (Out of stock in nearby stores)`;
+        checklist.appendChild(li);
+      });
+    }
+
+    const addBasketBtn = document.createElement('button');
+    addBasketBtn.className = 'kw-ai-btn-add-basket';
+    addBasketBtn.innerHTML = `<span>🛒</span> Add Complete Basket (₹${(basket.total || 0).toLocaleString('en-IN')})`;
+    addBasketBtn.onclick = () => handleAddCompleteBasketToCart(basket, addBasketBtn);
+
+    card.appendChild(header);
+    card.appendChild(storeInfo);
+    card.appendChild(checklist);
+    card.appendChild(addBasketBtn);
+
+    basketSection.appendChild(card);
+  }
+
+  async function handleAddCompleteBasketToCart(basket, btnElement) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      showToast('Please sign in to add products to your cart', 'warning');
+      return;
+    }
+
+    if (!basket || !basket.storeId || !Array.isArray(basket.items)) return;
+
+    if (btnElement) {
+      btnElement.disabled = true;
+      btnElement.textContent = 'Adding Complete Basket...';
+    }
+
+    const payloadItems = basket.items.map((item) => ({
+      productId: item.product._id,
+      quantity: item.quantity,
+    }));
+
+    try {
+      const res = await fetch('/api/customer/cart/basket', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          storeId: basket.storeId,
+          items: payloadItems,
+          clearExisting: false,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        showToast(`Added complete basket from "${basket.storeName}"!`, 'success');
+        updateHeaderCartBadge(data.items);
+        if (btnElement) {
+          btnElement.textContent = '✓ Basket Added';
+          setTimeout(() => {
+            btnElement.disabled = false;
+            btnElement.innerHTML = `<span>🛒</span> Add Complete Basket (₹${(basket.total || 0).toLocaleString('en-IN')})`;
+          }, 2500);
+        }
+      } else if (data.code === 'CROSS_STORE_CONFLICT') {
+        if (btnElement) {
+          btnElement.disabled = false;
+          btnElement.innerHTML = `<span>🛒</span> Add Complete Basket (₹${(basket.total || 0).toLocaleString('en-IN')})`;
+        }
+        if (
+          confirm(
+            `${data.message}\n\nClear your current cart to start shopping from ${basket.storeName}?`
+          )
+        ) {
+          const retryRes = await fetch('/api/customer/cart/basket', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              storeId: basket.storeId,
+              items: payloadItems,
+              clearExisting: true,
+            }),
+          });
+          const retryData = await retryRes.json();
+          if (retryRes.ok) {
+            showToast(`Cart updated! Complete basket added from "${basket.storeName}".`, 'success');
+            updateHeaderCartBadge(retryData.items);
+          } else {
+            showToast(retryData.message || 'Could not add complete basket', 'error');
+          }
+        }
+      } else {
+        showToast(data.message || 'Could not add complete basket', 'error');
+        if (btnElement) {
+          btnElement.disabled = false;
+          btnElement.innerHTML = `<span>🛒</span> Add Complete Basket (₹${(basket.total || 0).toLocaleString('en-IN')})`;
+        }
+      }
+    } catch (err) {
+      console.error('[kw-ai-assistant] Add basket error:', err);
+      showToast('Network error adding complete basket', 'error');
+      if (btnElement) {
+        btnElement.disabled = false;
+        btnElement.innerHTML = `<span>🛒</span> Add Complete Basket (₹${(basket.total || 0).toLocaleString('en-IN')})`;
+      }
     }
   }
 

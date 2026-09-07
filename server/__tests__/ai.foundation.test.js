@@ -642,6 +642,7 @@ describe("KiranaWala AI Foundation", () => {
         "getNearbyStores",
         "getProductDetails",
         "checkProductAvailability",
+        "buildShoppingIntentBasket",
       ];
 
       const FORBIDDEN_WRITE_OPERATIONS = [

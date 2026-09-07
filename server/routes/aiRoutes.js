@@ -183,11 +183,16 @@ router.post(
         userContext,
       });
 
-      return res.json({
+      const responsePayload = {
         message: result.message,
         products: result.products || [],
         toolsUsed: result.toolsUsed || [],
-      });
+      };
+
+      if (result.intent) responsePayload.intent = result.intent;
+      if (result.basket) responsePayload.basket = result.basket;
+
+      return res.json(responsePayload);
     } catch (err) {
       // Provider-not-configured error → 503 Service Unavailable
       if (err.code === "AI_PROVIDER_NOT_CONFIGURED") {

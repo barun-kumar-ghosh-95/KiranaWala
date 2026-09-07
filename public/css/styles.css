@@ -7045,3 +7045,104 @@ input.kw-has-left-icon.kw-has-right-toggle,
         max-width: 100%;
     }
 }
+
+/* ==========================================================================
+   KiranaWala AI — Shopping Intent & Complete Basket Card Styles
+   ========================================================================== */
+
+.kw-ai-basket-section {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.kw-ai-basket-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.kw-ai-basket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.kw-ai-basket-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  color: var(--text-primary, #111827);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.kw-ai-basket-store {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.kw-ai-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.kw-ai-checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+.kw-ai-checklist-item.item-ok {
+  color: #059669;
+}
+
+.kw-ai-checklist-item.item-missing {
+  color: #dc2626;
+}
+
+.kw-ai-basket-total {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #059669;
+}
+
+.kw-ai-btn-add-basket {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #059669;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.kw-ai-btn-add-basket:hover {
+  background: #047857;
+}
+
+.kw-ai-btn-add-basket:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

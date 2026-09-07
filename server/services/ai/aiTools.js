@@ -299,6 +299,64 @@ async function checkProductAvailability({ productId } = {}) {
 }
 
 // ---------------------------------------------------------------------------
+// Tool: buildShoppingIntentBasket
+// ---------------------------------------------------------------------------
+
+const { buildIntentBasket, parseShoppingIntent } = require("./aiIntentBasket");
+
+/**
+ * Searches MongoDB products and constructs a single-store grocery basket
+ * matching a customer's natural language shopping intent.
+ *
+ * @param {object} params
+ * @param {string} params.purpose       - Purpose (e.g. 'make tea', 'breakfast', 'movie night snacks')
+ * @param {number} [params.servings]    - Number of people (default 1)
+ * @param {number} [params.budget]      - Max budget constraint in INR
+ * @param {Array}  [params.items]       - List of requested items
+ * @param {number} [params.latitude]    - User latitude
+ * @param {number} [params.longitude]   - User longitude
+ * @returns {Promise<object>}
+ */
+async function buildShoppingIntentBasketTool({
+  purpose,
+  servings,
+  budget,
+  items,
+  latitude,
+  longitude,
+} = {}) {
+  const userContext = {};
+  if (latitude !== undefined && longitude !== undefined) {
+    userContext.latitude = Number(latitude);
+    userContext.longitude = Number(longitude);
+  }
+
+  let requiredItems = [];
+  if (Array.isArray(items) && items.length > 0) {
+    requiredItems = items.map((i) => {
+      if (typeof i === "string") {
+        return { name: i, keywords: [i] };
+      }
+      const itemName = i.item || i.name || "item";
+      return { name: itemName, keywords: [itemName] };
+    });
+  } else if (purpose) {
+    const parsed = parseShoppingIntent(purpose);
+    if (parsed.requiredItems) {
+      requiredItems = parsed.requiredItems;
+    }
+  }
+
+  return await buildIntentBasket({
+    purpose: purpose || "grocery shopping",
+    servings: Number(servings) || 1,
+    budget: budget ? Number(budget) : null,
+    requiredItems,
+    userContext,
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Exports
 // ---------------------------------------------------------------------------
 
@@ -307,6 +365,7 @@ module.exports = {
   getNearbyStores,
   getProductDetails,
   checkProductAvailability,
+  buildShoppingIntentBasket: buildShoppingIntentBasketTool,
   // Export shapers for use in tests
   _shapeProduct: shapeProduct,
   _shapeStore: shapeStore,
