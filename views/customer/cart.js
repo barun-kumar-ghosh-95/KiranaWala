@@ -101,6 +101,12 @@ function renderCart(cart) {
     if (subtotalEl) subtotalEl.textContent = formatINR(cart.subtotal);
     if (totalEl) totalEl.textContent = formatINR(cart.total);
 
+    const navBadge = document.getElementById('nav-cart-badge');
+    if (navBadge) {
+        navBadge.textContent = totalItems;
+        navBadge.style.display = totalItems > 0 ? 'inline-flex' : 'none';
+    }
+
     updateLiveRegion(`Loaded cart with ${totalItems} items. Total amount ${formatINR(cart.total)}.`);
 }
 
@@ -114,14 +120,15 @@ function createCartItemRow(item) {
     imgWrapper.className = 'cart-item-img-wrapper';
     const img = document.createElement('img');
     img.className = 'cart-item-img';
-    img.src = product.image || '';
+    const imgSrc = (product.image && !product.image.includes('example.com'))
+        ? product.image
+        : '/images/essentials-editorial.jpg';
+    img.src = imgSrc;
     img.alt = product.name || 'Product Image';
+    img.loading = 'lazy';
     img.onerror = () => {
-        img.style.display = 'none';
-        const fallback = document.createElement('div');
-        fallback.className = 'cart-img-fallback';
-        fallback.textContent = '🛍️';
-        imgWrapper.appendChild(fallback);
+        img.onerror = null;
+        img.src = '/images/essentials-editorial.jpg';
     };
     imgWrapper.appendChild(img);
 

@@ -3,110 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store Owner Registration</title>
+    <title>Register Store | KiranaWala Merchant</title>
+    <meta name="description" content="Register your neighborhood kirana store on KiranaWala to start receiving local customer grocery orders online.">
+
+    <!-- Google Fonts — Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="auth-bg login-page">
-        <a href="/" class="back-link">&larr; Back to Home</a>
-        <div class="login-wrapper">
-            <h1 class="brand">Kirana<span></span>Wala</span></h1>
-            <p class="brand-sub">Create your store owner account</p>
-
-            <div class="login-card">
-                <form id="registerForm">
-                    <label class="field-label" for="username">Username</label>
-                    <div class="input-row">
-                        <span class="icon-box" aria-hidden="true">&#128100;</span>
-                        <input type="text" id="username" placeholder="yourname" required>
-                    </div>
-
-                    <label class="field-label" for="email">Email Address</label>
-                    <div class="input-row">
-                        <span class="icon-box" aria-hidden="true">&#9993;</span>
-                        <input type="email" id="email" placeholder="you@store.com" required>
-                    </div>
-
-                    <label class="field-label" for="password">Password</label>
-                    <div class="input-row">
-                        <span class="icon-box" aria-hidden="true">&#128274;</span>
-                        <input type="password" id="password" placeholder="********" required>
-                    </div>
-
-                    <label class="field-label" for="storeName">Store Name</label>
-                    <div class="input-row">
-                        <span class="icon-box" aria-hidden="true">&#127970;</span>
-                        <input type="text" id="storeName" placeholder="e.g., KiranaWala Mart" required>
-                    </div>
-
-                    <label class="field-label" for="storeDescription">Store Description</label>
-                    <div class="input-row">
-                        <span class="icon-box" aria-hidden="true">&#9997;</span>
-                        <input type="text" id="storeDescription" placeholder="Short description" required>
-                    </div>
-
-                    <label class="field-label" for="storeCategory">Store Category</label>
-                    <div class="input-row">
-                        <span class="icon-box" aria-hidden="true">&#128717;</span>
-                        <select id="storeCategory" required style="width:100%;padding:14px 16px 14px 48px;border:1px solid #e5e5e5;border-radius:14px;background:#fff;font-size:0.95rem;">
-                            <option value="">Select Store Category</option>
-                            <option value="Grocery">Grocery</option>
-                            <option value="Electronics">Electronics</option>
-                            <option value="Fashion">Fashion</option>
-                            <option value="Home & Living">Home & Living</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="auth-btn sign-btn">Register Store</button>
-
-                    <div class="separator"><span>OR</span></div>
-                    <p class="create-account">Already have a store? <a href="/store-owner/login">Login</a></p>
-                </form>
+    <div class="auth-split-layout">
+        <!-- Left Editorial Visual Panel -->
+        <aside class="auth-visual-panel merchant-theme" aria-label="Merchant Platform Overview">
+            <div class="auth-visual-header">
+                <a href="/" class="brand-logo" style="color: white; font-size: 1.6rem;" aria-label="KiranaWala Home">
+                    KiranaWala<span class="brand-wordmark-dot"></span>
+                </a>
             </div>
 
-            <p class="tos-note">By registering, you agree to our <a href="#">Terms of Service</a></p>
-        </div>
+            <div class="auth-visual-footer">
+                <div class="auth-brand-pill">
+                    <span>🏪 Merchant Onboarding</span>
+                </div>
+                <h2 class="auth-visual-title">
+                    Bring Your Store Online.<br>
+                    <span class="auth-visual-title-highlight">Keep It Local.</span>
+                </h2>
+                <p class="auth-visual-desc">
+                    Join verified neighborhood store owners serving loyal local customers. Set your items, manage stock, and fulfill orders with speed and dignity.
+                </p>
+
+                <div class="auth-trust-badges">
+                    <div class="auth-trust-badge-item">
+                        <span class="icon">✓</span>
+                        <span>Keep 100% of your customer relationships</span>
+                    </div>
+                    <div class="auth-trust-badge-item">
+                        <span class="icon">📦</span>
+                        <span>Instant product catalog and order tracking</span>
+                    </div>
+                    <div class="auth-trust-badge-item">
+                        <span class="icon">⚡</span>
+                        <span>Setup takes less than 2 minutes</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Form Panel -->
+        <main class="auth-form-panel" role="main">
+            <div class="auth-form-container">
+                <nav class="auth-top-nav" aria-label="Authentication navigation">
+                    <a href="/" class="auth-back-link">← Back to Home</a>
+                    <a href="/customer/register" class="auth-switch-link">Customer Registration →</a>
+                </nav>
+
+                <div class="auth-form-header">
+                    <span class="auth-form-kicker">NEW MERCHANT ONBOARDING</span>
+                    <h1 class="auth-form-title">Register your store</h1>
+                    <p class="auth-form-subtitle">Create your owner account and register your store details in one simple step.</p>
+                </div>
+
+                <!-- Inline Error Banner -->
+                <div id="auth-alert-banner" class="auth-alert-banner" role="alert" aria-live="polite">
+                    <span class="alert-icon" aria-hidden="true">⚠️</span>
+                    <span id="auth-alert-text"></span>
+                </div>
+
+                <form id="registerForm" novalidate>
+                    <div class="auth-form-group">
+                        <label class="field-label" for="username">Owner Full Name</label>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">👤</span>
+                            <input type="text" id="username" placeholder="e.g. Rajesh Sharma" autocomplete="name" required>
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label class="field-label" for="email">Owner Email Address</label>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">✉</span>
+                            <input type="email" id="email" placeholder="owner@store.com" autocomplete="email" required>
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label class="field-label" for="password">Account Password</label>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">🔒</span>
+                            <input type="password" id="password" placeholder="At least 6 characters" autocomplete="new-password" required>
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label class="field-label" for="storeName">Store Name</label>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">🏪</span>
+                            <input type="text" id="storeName" placeholder="e.g. Sharma Kirana & Provision Store" required>
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label class="field-label" for="storeDescription">Store Description</label>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">📝</span>
+                            <input type="text" id="storeDescription" placeholder="Fresh daily essentials, dairy & spices" required>
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label class="field-label" for="storeCategory">Store Category</label>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">🏷️</span>
+                            <select id="storeCategory" required>
+                                <option value="">Select Primary Category</option>
+                                <option value="Grocery" selected>Grocery & Kirana</option>
+                                <option value="Dairy & Essentials">Dairy & Daily Essentials</option>
+                                <option value="Spices & Grains">Spices, Pulses & Grains</option>
+                                <option value="Home & Living">Home & Living</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="auth-btn sign-btn">Complete Store Registration →</button>
+
+                    <div class="separator"><span>OR</span></div>
+
+                    <p class="create-account">
+                        Already have a registered store? <a href="/store-owner/login">Sign In</a>
+                    </p>
+
+                    <p class="tos-note">
+                        By registering, you agree to our <a href="#">Merchant Partner Terms</a> & <a href="#">Service Agreement</a>
+                    </p>
+                </form>
+            </div>
+        </main>
     </div>
+
     <script>
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        const registerForm = document.getElementById('registerForm');
+        const alertBanner = document.getElementById('auth-alert-banner');
+        const alertText = document.getElementById('auth-alert-text');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function showError(msg) {
+            if (alertBanner && alertText) {
+                alertText.textContent = msg;
+                alertBanner.classList.add('active');
+            } else {
+                alert(msg);
+            }
+        }
+
+        function clearError() {
+            if (alertBanner) {
+                alertBanner.classList.remove('active');
+            }
+        }
+
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const data = {
-                username: document.getElementById('username').value,
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value,
-                storeName: document.getElementById('storeName').value,
-                storeDescription: document.getElementById('storeDescription').value,
-                storeCategory: document.getElementById('storeCategory').value
-            };
+            clearError();
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const storeName = document.getElementById('storeName').value.trim();
+            const storeDescription = document.getElementById('storeDescription').value.trim();
+            const storeCategory = document.getElementById('storeCategory').value;
+
+            if (!username || !email || !password || !storeName || !storeDescription || !storeCategory) {
+                showError('Please fill in all store and owner registration details.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Registering Store...';
 
             try {
                 const response = await fetch('/api/store/register', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        password,
+                        storeName,
+                        storeDescription,
+                        storeCategory
+                    })
                 });
 
                 const result = await response.json();
                 if (response.ok) {
-                    alert('Registration successful!');
-                    window.location.href = '/store-owner/login';
+                    window.location.href = '/store-owner/login?registered=true';
                 } else {
                     const errorMsg = result.message || result.error || 'Store registration failed. Please try again.';
-                    alert(errorMsg);
+                    showError(errorMsg);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Complete Store Registration →';
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred during store registration.');
+                showError('An error occurred during store registration. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Complete Store Registration →';
             }
         });
-
-        function logout() {
-            localStorage.removeItem('token');
-            window.location.href = '/';
-        }
     </script>
+    <script src="/js/kw-ui-engine.js"></script>
 </body>
 </html>

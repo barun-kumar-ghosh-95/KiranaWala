@@ -206,19 +206,14 @@ function createProductCard(product) {
     const img = document.createElement('img');
     img.className = 'product-img';
     img.alt = product.name || 'Product Image';
-    img.src = product.image || '';
+    const initialSrc = (product.image && !product.image.includes('example.com'))
+        ? product.image
+        : '/images/essentials-editorial.jpg';
+    img.src = initialSrc;
+    img.loading = 'lazy';
     img.onerror = () => {
-        // Safe fallback image handling
-        img.style.display = 'none';
-        const fallbackIcon = document.createElement('div');
-        fallbackIcon.className = 'product-img-fallback';
-        fallbackIcon.innerHTML = `
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-            </svg>
-        `;
-        imgContainer.appendChild(fallbackIcon);
+        img.onerror = null;
+        img.src = '/images/essentials-editorial.jpg';
     };
     imgContainer.appendChild(img);
 
@@ -433,7 +428,18 @@ function updateNavCartBadge(count) {
     const badge = document.getElementById('nav-cart-count');
     if (badge) {
         badge.textContent = count;
-        badge.style.display = count > 0 ? 'inline-block' : 'inline-block';
+        badge.style.display = count > 0 ? 'inline-flex' : 'none';
+    }
+
+    const stickyBar = document.getElementById('sticky-cart-bar');
+    const stickyCount = document.getElementById('sticky-cart-count');
+    if (stickyBar && stickyCount) {
+        if (count > 0) {
+            stickyCount.textContent = `${count} item${count === 1 ? '' : 's'}`;
+            stickyBar.style.display = 'block';
+        } else {
+            stickyBar.style.display = 'none';
+        }
     }
 }
 

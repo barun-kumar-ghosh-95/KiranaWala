@@ -4,34 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Store Products — KiranaWala</title>
-    <meta name="description" content="Explore products, pricing, and availability from your local Kirana store.">
-    <link rel="stylesheet" href="/css/styles.css">
-    <!-- Google Fonts -->
+    <meta name="description" content="Explore fresh groceries, pricing, and availability from your trusted neighborhood Kirana store.">
+
+    <!-- Google Fonts — Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="customer-body">
     <div id="accessibility-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
-    <!-- Header Navigation -->
-    <header class="app-navbar" role="banner">
-        <div class="navbar-container">
-            <div class="nav-brand">
-                <a href="/customer/dashboard" class="brand-link" aria-label="KiranaWala Home">
-                    <span class="brand-icon">🛒</span>
-                    <span class="brand-text">KiranaWala</span>
-                </a>
-            </div>
-            <div class="nav-actions">
-                <a href="/customer/orders" class="nav-link">My Orders</a>
-                <a href="/customer/cart" class="nav-cart-btn" aria-label="View Shopping Cart">
-                    <span class="cart-icon">🛒</span> Cart <span id="nav-cart-count" class="cart-badge-count">0</span>
-                </a>
-                <button class="nav-back-btn" onclick="goBackToDashboard()" aria-label="Back to Nearby Stores">
-                    ← Back to Stores
+    <!-- Unified Brand Header Navigation -->
+    <header class="premium-header" role="banner">
+        <div class="premium-header-content">
+            <a href="/" class="brand-logo" aria-label="KiranaWala Home">
+                KiranaWala<span class="brand-wordmark-dot"></span>
+            </a>
+
+            <nav class="header-controls" aria-label="Customer Navigation">
+                <button class="nav-link-btn" onclick="goBackToDashboard()" aria-label="Back to Nearby Stores">
+                    ← Stores
                 </button>
-            </div>
+                <a href="/customer/orders" class="nav-link-btn">My Orders</a>
+                <a href="/customer/cart" class="nav-cart-btn" aria-label="View Shopping Cart">
+                    <span class="cart-icon">🛒</span>
+                    <span class="cart-label">Cart</span>
+                    <span id="nav-cart-count" class="nav-cart-badge">0</span>
+                </a>
+            </nav>
         </div>
     </header>
 
@@ -41,14 +44,16 @@
             <div class="store-context-content">
                 <div class="store-title-row">
                     <h1 id="store-name" class="store-headline">Loading Store...</h1>
+                    <span class="verified-icon" title="Verified Local Merchant">✓</span>
                     <span id="store-category-badge" class="store-cat-badge">Kirana</span>
+                    <span class="store-speed-pill">⚡ 15–20 min Delivery</span>
                 </div>
                 <p id="store-description" class="store-subtext">Fetching store details...</p>
             </div>
         </section>
 
         <!-- Product Discovery Control Bar (Search, Filter, Sort) -->
-        <section class="discovery-controls-section" aria-label="Product Controls">
+        <section class="discovery-controls-section" aria-label="Product Discovery Controls">
             <div class="search-sort-bar">
                 <div class="search-input-wrapper">
                     <span class="search-icon" aria-hidden="true">🔍</span>
@@ -56,7 +61,7 @@
                         type="text" 
                         id="product-search" 
                         class="search-input" 
-                        placeholder="Search products by name, category, or description..."
+                        placeholder="Search items by name, category, or description..."
                         aria-label="Search products in this store"
                     >
                 </div>
@@ -82,20 +87,80 @@
 
         <!-- Product List Header -->
         <div class="products-meta-header">
-            <h2 class="section-title">Available Products</h2>
-            <span id="results-count" class="results-count-badge">Loading...</span>
+            <div class="products-header-title-group">
+                <h2 class="section-title">Available Products</h2>
+                <span id="results-count" class="results-count-badge">Loading...</span>
+            </div>
         </div>
 
         <!-- Products Grid Container -->
-        <section id="products-grid" class="products-grid-container" aria-label="Product List">
-            <!-- Skeleton cards / Product cards rendered by products.js -->
+        <section id="products-grid" class="products-grid-container" aria-label="Product Catalog">
+            <div class="product-card kw-skeleton-card">
+                <div class="kw-skeleton-box" style="height: 160px; width: 100%; border-radius: 8px;"></div>
+                <div style="padding: 1rem 0 0 0;">
+                    <div class="kw-skeleton-box" style="height: 20px; width: 80%; margin-bottom: 8px;"></div>
+                    <div class="kw-skeleton-box" style="height: 16px; width: 40%; margin-bottom: 12px;"></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div class="kw-skeleton-box" style="height: 24px; width: 30%;"></div>
+                        <div class="kw-skeleton-box" style="height: 36px; width: 40%; border-radius: 6px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="product-card kw-skeleton-card">
+                <div class="kw-skeleton-box" style="height: 160px; width: 100%; border-radius: 8px;"></div>
+                <div style="padding: 1rem 0 0 0;">
+                    <div class="kw-skeleton-box" style="height: 20px; width: 80%; margin-bottom: 8px;"></div>
+                    <div class="kw-skeleton-box" style="height: 16px; width: 40%; margin-bottom: 12px;"></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div class="kw-skeleton-box" style="height: 24px; width: 30%;"></div>
+                        <div class="kw-skeleton-box" style="height: 36px; width: 40%; border-radius: 6px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="product-card kw-skeleton-card">
+                <div class="kw-skeleton-box" style="height: 160px; width: 100%; border-radius: 8px;"></div>
+                <div style="padding: 1rem 0 0 0;">
+                    <div class="kw-skeleton-box" style="height: 20px; width: 80%; margin-bottom: 8px;"></div>
+                    <div class="kw-skeleton-box" style="height: 16px; width: 40%; margin-bottom: 12px;"></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div class="kw-skeleton-box" style="height: 24px; width: 30%;"></div>
+                        <div class="kw-skeleton-box" style="height: 36px; width: 40%; border-radius: 6px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="product-card kw-skeleton-card">
+                <div class="kw-skeleton-box" style="height: 160px; width: 100%; border-radius: 8px;"></div>
+                <div style="padding: 1rem 0 0 0;">
+                    <div class="kw-skeleton-box" style="height: 20px; width: 80%; margin-bottom: 8px;"></div>
+                    <div class="kw-skeleton-box" style="height: 16px; width: 40%; margin-bottom: 12px;"></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div class="kw-skeleton-box" style="height: 24px; width: 30%;"></div>
+                        <div class="kw-skeleton-box" style="height: 36px; width: 40%; border-radius: 6px;"></div>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
+
+    <!-- Mobile Sticky Cart Bar (Shown when cart has items) -->
+    <aside id="sticky-cart-bar" class="sticky-cart-bar" style="display: none;" aria-label="Cart Quick Access">
+        <div class="sticky-cart-inner">
+            <div class="sticky-cart-info">
+                <span id="sticky-cart-count" class="sticky-cart-count-badge">0 items</span>
+                <span class="sticky-cart-label">in your basket</span>
+            </div>
+            <a href="/customer/cart" class="btn-sticky-checkout">
+                View Cart & Checkout →
+            </a>
+        </div>
+    </aside>
 
     <footer class="app-footer">
         <p>© 2026 KiranaWala — Hyperlocal Grocery Commerce</p>
     </footer>
 
     <script src="/customer/products.js"></script>
+    <script src="/js/kw-ui-engine.js"></script>
+    <script src="/js/kw-ai-assistant.js"></script>
 </body>
 </html>

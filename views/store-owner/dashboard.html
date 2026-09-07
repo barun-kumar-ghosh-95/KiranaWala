@@ -4,20 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Store Dashboard — KiranaWala</title>
+    <!-- Google Fonts — Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <header class="dashboard-header">
-            <div class="header-content">
-                <h2>Store Dashboard</h2>
-                <button id="addProductBtn" onclick="showAddProductModal()" style="display: none;">
+    <div class="container" style="max-width: 1280px; margin: 0 auto; padding: 20px 24px;">
+        <header class="app-nav" style="margin-bottom: 24px; padding: 14px 20px; background: var(--kw-surface); border: 1px solid var(--kw-border); border-radius: var(--kw-radius-lg); display: flex; align-items: center; justify-content: space-between; box-shadow: var(--kw-shadow-sm);">
+            <div class="app-nav-brand" style="display: flex; align-items: center; gap: 14px;">
+                <a href="/" class="app-nav-logo" style="text-decoration: none; font-family: var(--kw-font-display); font-size: 1.45rem; font-weight: 800; color: var(--kw-text-main); display: inline-flex; align-items: center;">
+                    KiranaWala<span class="brand-wordmark-dot" style="display:inline-block; width:6px; height:6px; background:var(--kw-terracotta-500); border-radius:50%; margin-left:2px;"></span>
+                </a>
+                <span class="merchant-badge" style="display: inline-flex; align-items: center; gap: 6px; background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">
+                    <i class="fas fa-store"></i> Merchant Portal
+                </span>
+            </div>
+            <div class="header-actions" style="display: flex; align-items: center; gap: 12px;">
+                <button id="addProductBtn" onclick="showAddProductModal()" style="display: none; background: var(--kw-primary); color: white; border: none; padding: 9px 18px; border-radius: var(--kw-radius-md); font-weight: 600; font-size: 0.88rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: var(--kw-transition);">
                     <i class="fas fa-plus"></i> Add Product
                 </button>
+                <button id="logoutBtn" onclick="logout()" style="background: transparent; color: var(--kw-text-muted); border: 1px solid var(--kw-border); padding: 9px 16px; border-radius: var(--kw-radius-md); font-weight: 600; font-size: 0.88rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: var(--kw-transition);">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
             </div>
-            <button id="logoutBtn" onclick="logout()">Logout</button>
         </header>
+
+        <!-- Executive KPI Metrics Overview -->
+        <div class="owner-kpi-grid">
+            <div class="owner-kpi-card">
+                <div class="owner-kpi-icon-box blue"><i class="fas fa-shopping-bag"></i></div>
+                <div class="owner-kpi-info">
+                    <div class="owner-kpi-label">Total Received</div>
+                    <div class="owner-kpi-value" id="metricTotalOrders">0</div>
+                </div>
+            </div>
+            <div class="owner-kpi-card">
+                <div class="owner-kpi-icon-box amber"><i class="fas fa-bell"></i></div>
+                <div class="owner-kpi-info">
+                    <div class="owner-kpi-label">New Orders (Placed)</div>
+                    <div class="owner-kpi-value" id="metricPlacedOrders">0</div>
+                </div>
+            </div>
+            <div class="owner-kpi-card">
+                <div class="owner-kpi-icon-box purple"><i class="fas fa-box-open"></i></div>
+                <div class="owner-kpi-info">
+                    <div class="owner-kpi-label">In Prep / Processing</div>
+                    <div class="owner-kpi-value" id="metricProcessingOrders">0</div>
+                </div>
+            </div>
+            <div class="owner-kpi-card">
+                <div class="owner-kpi-icon-box green"><i class="fas fa-check-circle"></i></div>
+                <div class="owner-kpi-info">
+                    <div class="owner-kpi-label">Completed Deliveries</div>
+                    <div class="owner-kpi-value" id="metricCompletedOrders">0</div>
+                </div>
+            </div>
+        </div>
 
         <!-- Navigation Tabs: Orders & Products -->
         <div class="dashboard-nav-tabs" role="tablist">
@@ -249,6 +294,16 @@
             document.getElementById('countProcessing').textContent = counts.processing;
             document.getElementById('countCompleted').textContent = counts.completed;
             document.getElementById('countCancelled').textContent = counts.cancelled;
+
+            // Sync Executive KPI Metrics Strip
+            const mTotal = document.getElementById('metricTotalOrders');
+            const mPlaced = document.getElementById('metricPlacedOrders');
+            const mProcessing = document.getElementById('metricProcessingOrders');
+            const mCompleted = document.getElementById('metricCompletedOrders');
+            if (mTotal) mTotal.textContent = counts.all;
+            if (mPlaced) mPlaced.textContent = counts.placed;
+            if (mProcessing) mProcessing.textContent = counts.processing;
+            if (mCompleted) mCompleted.textContent = counts.completed;
         }
 
         function setOrdersFilter(status) {
@@ -786,5 +841,6 @@
             }
         }
     </script>
+    <script src="/js/kw-ui-engine.js"></script>
 </body>
 </html>

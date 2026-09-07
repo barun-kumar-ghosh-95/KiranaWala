@@ -3,78 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Registration</title>
+    <title>Customer Registration | KiranaWala</title>
+    <meta name="description" content="Create your KiranaWala account to enjoy local neighborhood grocery delivery directly to your home.">
+
+    <!-- Google Fonts — Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="auth-bg login-page">
-        <a href="/" class="back-link">&larr; Back to Home</a>
-        <div class="login-wrapper">
-            <h1 class="brand">Kirana<span></span>Wala</span></h1>
-            <p class="brand-sub">Create your customer account</p>
-
-            <div class="login-card">
-                <form id="registerForm">
-                    <label class="field-label" for="username">Username</label>
-                    <div class="input-row">
-                        <span class="icon-box" aria-hidden="true">&#128100;</span>
-                        <input type="text" id="username" placeholder="yourname" required>
-                    </div>
-
-                    <label class="field-label" for="email">Email Address</label>
-                    <div class="input-row">
-                        <span class="icon-box" aria-hidden="true">&#9993;</span>
-                        <input type="email" id="email" placeholder="you@example.com" required>
-                    </div>
-
-                    <label class="field-label" for="password">Password</label>
-                    <div class="input-row">
-                        <span class="icon-box" aria-hidden="true">&#128274;</span>
-                        <input type="password" id="password" placeholder="********" required>
-                    </div>
-
-                    <button type="submit" class="auth-btn sign-btn">Register</button>
-
-                    <div class="separator"><span>OR</span></div>
-                    <p class="create-account">Already have an account? <a href="/customer/login">Login</a></p>
-                </form>
+    <div class="auth-split-layout">
+        <!-- Left Editorial Visual Panel -->
+        <aside class="auth-visual-panel customer-theme" aria-label="Brand Overview">
+            <div class="auth-visual-header">
+                <a href="/" class="brand-logo" style="color: white; font-size: 1.6rem;" aria-label="KiranaWala Home">
+                    KiranaWala<span class="brand-wordmark-dot"></span>
+                </a>
             </div>
 
-            <p class="tos-note">By registering, you agree to our <a href="#">Terms of Service</a></p>
-        </div>
+            <div class="auth-visual-footer">
+                <div class="auth-brand-pill">
+                    <span>🌾 Local Neighborhood Commerce</span>
+                </div>
+                <h2 class="auth-visual-title">
+                    Your Neighborhood.<br>
+                    <span class="auth-visual-title-highlight">At Your Doorstep.</span>
+                </h2>
+                <p class="auth-visual-desc">
+                    Shop fresh daily groceries, dairy, spices, and household essentials from the local merchants you trust.
+                </p>
+
+                <div class="auth-trust-badges">
+                    <div class="auth-trust-badge-item">
+                        <span class="icon">✓</span>
+                        <span>Direct neighborhood ordering & delivery</span>
+                    </div>
+                    <div class="auth-trust-badge-item">
+                        <span class="icon">⚡</span>
+                        <span>Orders delivered within 15–20 minutes</span>
+                    </div>
+                    <div class="auth-trust-badge-item">
+                        <span class="icon">🛡️</span>
+                        <span>Support your local community stores</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Form Panel -->
+        <main class="auth-form-panel" role="main">
+            <div class="auth-form-container">
+                <nav class="auth-top-nav" aria-label="Authentication navigation">
+                    <a href="/" class="auth-back-link">← Back to Home</a>
+                    <a href="/store-owner/register" class="auth-switch-link">Register as Store Owner →</a>
+                </nav>
+
+                <div class="auth-form-header">
+                    <span class="auth-form-kicker">NEW CUSTOMER</span>
+                    <h1 class="auth-form-title">Create an account</h1>
+                    <p class="auth-form-subtitle">Join thousands of neighborhood shoppers discovering local stores.</p>
+                </div>
+
+                <!-- Inline Error Banner -->
+                <div id="auth-alert-banner" class="auth-alert-banner" role="alert" aria-live="polite">
+                    <span class="alert-icon" aria-hidden="true">⚠️</span>
+                    <span id="auth-alert-text"></span>
+                </div>
+
+                <form id="registerForm" novalidate>
+                    <div class="auth-form-group">
+                        <label class="field-label" for="username">Your Name</label>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">👤</span>
+                            <input type="text" id="username" placeholder="e.g. Ramesh Kumar" autocomplete="name" required>
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label class="field-label" for="email">Email Address</label>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">✉</span>
+                            <input type="email" id="email" placeholder="you@example.com" autocomplete="email" required>
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label class="field-label" for="password">Password</label>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">🔒</span>
+                            <input type="password" id="password" placeholder="At least 6 characters" autocomplete="new-password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="auth-btn sign-btn">Create Customer Account →</button>
+
+                    <div class="separator"><span>OR</span></div>
+
+                    <p class="create-account">
+                        Already have an account? <a href="/customer/login">Sign In</a>
+                    </p>
+
+                    <p class="tos-note">
+                        By registering, you agree to KiranaWala's <a href="#">Terms of Service</a> & <a href="#">Privacy Policy</a>
+                    </p>
+                </form>
+            </div>
+        </main>
     </div>
+
     <script>
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        const registerForm = document.getElementById('registerForm');
+        const alertBanner = document.getElementById('auth-alert-banner');
+        const alertText = document.getElementById('auth-alert-text');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function showError(msg) {
+            if (alertBanner && alertText) {
+                alertText.textContent = msg;
+                alertBanner.classList.add('active');
+            } else {
+                alert(msg);
+            }
+        }
+
+        function clearError() {
+            if (alertBanner) {
+                alertBanner.classList.remove('active');
+            }
+        }
+
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const data = {
-                username: document.getElementById('username').value,
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value
-            };
+            clearError();
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !email || !password) {
+                showError('Please fill in all registration fields.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating Account...';
 
             try {
                 const response = await fetch('/api/customer/register', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
                 });
 
                 const result = await response.json();
                 if (response.ok) {
-                    alert('Registration successful!');
-                    window.location.href = '/customer/login';
+                    window.location.href = '/customer/login?registered=true';
                 } else {
                     const errorMsg = result.message || result.error || 'Registration failed. Please try again.';
-                    alert(errorMsg);
+                    showError(errorMsg);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Create Customer Account →';
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred during registration.');
+                showError('An error occurred during registration. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create Customer Account →';
             }
         });
     </script>
+    <script src="/js/kw-ui-engine.js"></script>
 </body>
 </html>

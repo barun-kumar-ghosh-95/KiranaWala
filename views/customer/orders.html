@@ -5,54 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Orders — KiranaWala</title>
     <meta name="description" content="View your order history, track order status, and review details of past grocery purchases on KiranaWala.">
-    <link rel="stylesheet" href="/css/styles.css">
-    <!-- Google Fonts -->
+
+    <!-- Google Fonts — Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="customer-body">
     <div id="accessibility-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
-    <!-- Header Navigation -->
-    <header class="app-navbar" role="banner">
-        <div class="navbar-container">
-            <div class="nav-brand">
-                <a href="/customer/dashboard" class="brand-link" aria-label="KiranaWala Home">
-                    <span class="brand-icon">🛒</span>
-                    <span class="brand-text">KiranaWala</span>
-                </a>
-            </div>
-            <nav class="nav-actions" aria-label="Customer Navigation">
-                <a href="/customer/dashboard" class="nav-link">Stores</a>
-                <a href="/customer/cart" class="nav-link">Cart</a>
-                <a href="/customer/orders" class="nav-link active" aria-current="page">My Orders</a>
-                <button onclick="handleLogout()" class="nav-btn-logout" aria-label="Logout account">Logout</button>
+    <!-- Unified Brand Header Navigation -->
+    <header class="premium-header" role="banner">
+        <div class="premium-header-content">
+            <a href="/" class="brand-logo" aria-label="KiranaWala Home">
+                KiranaWala<span class="brand-wordmark-dot"></span>
+            </a>
+
+            <nav class="header-controls" aria-label="Customer Navigation">
+                <a href="/customer/dashboard" class="nav-link-btn">Stores</a>
+                <a href="/customer/cart" class="nav-link-btn">Cart</a>
+                <a href="/customer/orders" class="nav-link-btn active" aria-current="page">My Orders</a>
+                <button onclick="handleLogout()" class="logout-link" aria-label="Sign out of account">Sign Out</button>
             </nav>
         </div>
     </header>
 
     <main class="orders-main-layout" role="main">
         <div class="orders-page-header">
-            <div>
+            <div class="orders-header-title-group">
                 <h1 class="page-title">My Orders</h1>
-                <p class="page-subtitle">Track your current orders and review past purchases</p>
+                <p class="page-subtitle">Track live order statuses and review past neighborhood grocery purchases</p>
             </div>
             <span id="orders-count-badge" class="results-count-badge">Loading...</span>
         </div>
 
         <!-- Orders List Container -->
         <section id="orders-list-container" class="orders-list" aria-label="Order History List">
-            <!-- Order cards rendered dynamically by orders.js -->
+            <div class="card kw-skeleton-card" style="padding: 1.5rem; margin-bottom: 1rem;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 1rem;">
+                    <div class="kw-skeleton-box" style="height: 20px; width: 30%;"></div>
+                    <div class="kw-skeleton-box" style="height: 20px; width: 20%;"></div>
+                </div>
+                <div class="kw-skeleton-box" style="height: 16px; width: 50%; margin-bottom: 1rem;"></div>
+                <div class="kw-skeleton-box" style="height: 36px; width: 100%; border-radius: 6px;"></div>
+            </div>
+            <div class="card kw-skeleton-card" style="padding: 1.5rem; margin-bottom: 1rem;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 1rem;">
+                    <div class="kw-skeleton-box" style="height: 20px; width: 30%;"></div>
+                    <div class="kw-skeleton-box" style="height: 20px; width: 20%;"></div>
+                </div>
+                <div class="kw-skeleton-box" style="height: 16px; width: 50%; margin-bottom: 1rem;"></div>
+                <div class="kw-skeleton-box" style="height: 36px; width: 100%; border-radius: 6px;"></div>
+            </div>
         </section>
 
         <!-- Empty Orders State -->
         <section id="empty-orders-state" class="empty-orders-container" style="display: none;" aria-label="No Orders Found">
             <div class="empty-orders-card">
                 <div class="empty-orders-icon">📦</div>
-                <h2>NO ORDERS YET</h2>
-                <p>Your orders will appear here after you shop from a local store.</p>
-                <a href="/customer/dashboard" class="btn-browse-stores">Browse Stores</a>
+                <h2>No Orders Yet</h2>
+                <p>You haven't placed any orders yet. Discover local kirana stores near you to begin shopping.</p>
+                <a href="/customer/dashboard" class="btn-browse-stores">Discover Nearby Stores →</a>
             </div>
         </section>
     </main>
@@ -62,5 +78,6 @@
     </footer>
 
     <script src="/customer/orders.js"></script>
+    <script src="/js/kw-ui-engine.js"></script>
 </body>
 </html>

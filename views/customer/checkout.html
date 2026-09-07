@@ -4,58 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout — KiranaWala</title>
-    <meta name="description" content="Complete your grocery order delivery details and place your order on KiranaWala.">
-    <link rel="stylesheet" href="/css/styles.css">
-    <!-- Google Fonts -->
+    <meta name="description" content="Complete your grocery delivery details and place your order on KiranaWala.">
+
+    <!-- Google Fonts — Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="customer-body">
     <div id="accessibility-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
-    <!-- Header Navigation -->
-    <header class="app-navbar" role="banner">
-        <div class="navbar-container">
-            <div class="nav-brand">
-                <a href="/customer/dashboard" class="brand-link" aria-label="KiranaWala Home">
-                    <span class="brand-icon">🛒</span>
-                    <span class="brand-text">KiranaWala</span>
-                </a>
-            </div>
-            <div class="nav-actions">
-                <a href="/customer/cart" class="nav-back-btn" aria-label="Back to Cart">
+    <!-- Unified Brand Header Navigation -->
+    <header class="premium-header" role="banner">
+        <div class="premium-header-content">
+            <a href="/" class="brand-logo" aria-label="KiranaWala Home">
+                KiranaWala<span class="brand-wordmark-dot"></span>
+            </a>
+
+            <nav class="header-controls" aria-label="Customer Navigation">
+                <a href="/customer/cart" class="nav-link-btn" aria-label="Back to Cart">
                     ← Back to Cart
                 </a>
-            </div>
+                <a href="/customer/orders" class="nav-link-btn">My Orders</a>
+            </nav>
         </div>
     </header>
 
     <main class="checkout-main-layout" role="main">
+        <!-- Step Progression Breadcrumb -->
+        <nav class="checkout-stepper" aria-label="Order Progress">
+            <div class="step-item completed">
+                <span class="step-num">✓</span>
+                <span class="step-text">Basket</span>
+            </div>
+            <span class="step-arrow">→</span>
+            <div class="step-item active" aria-current="step">
+                <span class="step-num">2</span>
+                <span class="step-text">Delivery</span>
+            </div>
+            <span class="step-arrow">→</span>
+            <div class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">Confirmation</span>
+            </div>
+        </nav>
+
         <!-- Main Checkout Form & Summary Container -->
         <div id="checkout-form-wrapper" class="checkout-grid-container">
             <!-- Left Column: Delivery Form -->
             <section class="checkout-delivery-card" aria-labelledby="delivery-heading">
-                <h1 id="delivery-heading" class="checkout-section-title">Delivery Information</h1>
+                <div class="checkout-section-header">
+                    <h1 id="delivery-heading" class="checkout-section-title">Delivery Details</h1>
+                    <p class="checkout-section-subtitle">Your neighborhood merchant will deliver directly to this address.</p>
+                </div>
+
                 <form id="checkoutForm" onsubmit="handlePlaceOrder(event)">
                     <div class="form-group">
                         <label for="fullName" class="form-label">Full Name *</label>
-                        <input type="text" id="fullName" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">👤</span>
+                            <input type="text" id="fullName" class="form-control" placeholder="e.g. Rahul Sharma" autocomplete="name" required>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="phone" class="form-label">Phone Number *</label>
-                        <input type="tel" id="phone" class="form-control" placeholder="e.g. 9876543210" required>
+                        <label for="phone" class="form-label">Contact Phone Number *</label>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">📞</span>
+                            <input type="tel" id="phone" class="form-control" placeholder="e.g. 9876543210" autocomplete="tel" required>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="address" class="form-label">Delivery Address *</label>
-                        <textarea id="address" class="form-control" rows="3" placeholder="House No, Street, Landmark..." required></textarea>
+                        <label for="address" class="form-label">Delivery Street Address *</label>
+                        <div class="input-row textarea-row">
+                            <textarea id="address" class="form-control" rows="3" placeholder="House / Flat No, Building, Street, Landmark..." required></textarea>
+                        </div>
                     </div>
 
                     <div class="form-row-2">
                         <div class="form-group">
-                            <label for="city" class="form-label">City</label>
+                            <label for="city" class="form-label">City / Locality</label>
                             <input type="text" id="city" class="form-control" placeholder="City" value="New Delhi">
                         </div>
                         <div class="form-group">
@@ -64,15 +96,23 @@
                         </div>
                     </div>
 
+                    <div class="payment-mode-notice">
+                        <span class="pay-icon">💵</span>
+                        <div>
+                            <strong>Cash / UPI on Delivery</strong>
+                            <p>Pay securely via GooglePay, PhonePe, Paytm, or Cash directly to the local delivery partner upon arrival.</p>
+                        </div>
+                    </div>
+
                     <button type="submit" id="btn-place-order" class="btn-place-order">
-                        Place Order →
+                        Place Order & Confirm Delivery →
                     </button>
                 </form>
             </section>
 
             <!-- Right Column: Order Summary Card -->
             <aside class="checkout-summary-card" aria-label="Order Items Summary">
-                <h2 class="summary-title">Order Items</h2>
+                <h2 class="summary-title">Order Summary</h2>
                 <div id="checkout-store-context" class="checkout-store-info">
                     <span class="store-badge-small" id="checkout-store-cat">Kirana</span>
                     <strong id="checkout-store-name">Store Name</strong>
@@ -85,17 +125,21 @@
                 <hr class="summary-divider">
 
                 <div class="summary-row">
-                    <span>Subtotal</span>
+                    <span>Items Subtotal</span>
                     <span id="checkout-subtotal">₹0</span>
                 </div>
                 <div class="summary-row">
-                    <span>Delivery Fee</span>
+                    <span>Direct Neighborhood Delivery</span>
                     <span class="free-text">FREE</span>
                 </div>
                 <hr class="summary-divider">
                 <div class="summary-row summary-total">
-                    <span>Total</span>
+                    <span>Total Payable</span>
                     <span id="checkout-total">₹0</span>
+                </div>
+
+                <div class="checkout-guarantee-pill">
+                    <span>🛡️ 100% Genuine Local Store Guarantee</span>
                 </div>
             </aside>
         </div>
@@ -104,13 +148,13 @@
         <section id="order-success-screen" class="order-success-container" style="display: none;" aria-label="Order Confirmation">
             <div class="order-success-card">
                 <div class="success-icon-badge">🎉</div>
-                <h1 class="success-title">ORDER PLACED</h1>
+                <h1 class="success-title">Order Placed Successfully!</h1>
                 <p id="success-order-id" class="order-id-badge">Order #KW-XXXX</p>
-                <p class="success-message">Your order has been placed successfully and sent to the store for fulfillment.</p>
+                <p class="success-message">Your order has been transmitted directly to your local neighborhood kirana store. The storekeeper is preparing your items now.</p>
 
                 <div class="success-details-box">
                     <div class="detail-line">
-                        <span>Store:</span>
+                        <span>Fulfilling Store:</span>
                         <strong id="success-store-name">Local Kirana Store</strong>
                     </div>
                     <div class="detail-line">
@@ -118,14 +162,13 @@
                         <strong id="success-delivery-address">123 Street Name</strong>
                     </div>
                     <div class="detail-line">
-                        <span>Total Paid:</span>
+                        <span>Total Payable:</span>
                         <strong id="success-total-paid" class="text-green">₹0</strong>
                     </div>
                 </div>
 
                 <div class="success-actions-row">
-                    <a id="btn-view-placed-order" href="/customer/orders" class="btn-success-primary">View Order Details</a>
-                    <a href="/customer/orders" class="btn-secondary-link">My Orders</a>
+                    <a id="btn-view-placed-order" href="/customer/orders" class="btn-success-primary">Track Order in My Orders →</a>
                     <a href="/customer/dashboard" class="btn-secondary-link">Continue Shopping</a>
                 </div>
             </div>
@@ -137,5 +180,6 @@
     </footer>
 
     <script src="/customer/checkout.js"></script>
+    <script src="/js/kw-ui-engine.js"></script>
 </body>
 </html>

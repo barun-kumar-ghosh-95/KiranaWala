@@ -4,48 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Shopping Cart — KiranaWala</title>
-    <meta name="description" content="View items in your KiranaWala shopping cart, adjust quantities, and proceed to checkout.">
-    <link rel="stylesheet" href="/css/styles.css">
-    <!-- Google Fonts -->
+    <meta name="description" content="Review items in your KiranaWala shopping cart, adjust item quantities, and proceed to checkout.">
+
+    <!-- Google Fonts — Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="customer-body">
     <div id="accessibility-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
-    <!-- Header Navigation -->
-    <header class="app-navbar" role="banner">
-        <div class="navbar-container">
-            <div class="nav-brand">
-                <a href="/customer/dashboard" class="brand-link" aria-label="KiranaWala Home">
-                    <span class="brand-icon">🛒</span>
-                    <span class="brand-text">KiranaWala</span>
-                </a>
-            </div>
-            <div class="nav-actions">
-                <button class="nav-back-btn" onclick="goBackToStores()" aria-label="Back to Nearby Stores">
-                    ← Back to Stores
+    <!-- Unified Brand Header -->
+    <header class="premium-header" role="banner">
+        <div class="premium-header-content">
+            <a href="/" class="brand-logo" aria-label="KiranaWala Home">
+                KiranaWala<span class="brand-wordmark-dot"></span>
+            </a>
+
+            <nav class="header-controls" aria-label="Customer Navigation">
+                <button class="nav-link-btn" onclick="goBackToStores()" aria-label="Back to Nearby Stores">
+                    ← Stores
                 </button>
-            </div>
+                <a href="/customer/orders" class="nav-link-btn">My Orders</a>
+                <a href="/customer/cart" class="nav-cart-btn active" aria-label="View Shopping Cart">
+                    <span class="cart-icon">🛒</span>
+                    <span class="cart-label">Cart</span>
+                    <span id="nav-cart-badge" class="nav-cart-badge" style="display:none;">0</span>
+                </a>
+            </nav>
         </div>
     </header>
 
     <main class="cart-main-layout" role="main">
+        <!-- Step Progression Breadcrumb -->
+        <nav class="checkout-stepper" aria-label="Order Progress">
+            <div class="step-item active" aria-current="step">
+                <span class="step-num">1</span>
+                <span class="step-text">Basket</span>
+            </div>
+            <span class="step-arrow">→</span>
+            <div class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">Delivery</span>
+            </div>
+            <span class="step-arrow">→</span>
+            <div class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">Confirmation</span>
+            </div>
+        </nav>
+
         <!-- Store Identity & Context Banner -->
         <section id="cart-store-banner" class="store-context-banner" style="display: none;" aria-labelledby="cart-store-name">
             <div class="store-context-content">
                 <div class="store-title-row">
                     <h1 id="cart-store-name" class="store-headline">Store Name</h1>
+                    <span class="verified-icon" title="Verified Store">✓</span>
                     <span id="cart-store-category" class="store-cat-badge">Kirana</span>
+                    <span class="store-speed-pill">⚡ Direct Neighborhood Delivery</span>
                 </div>
                 <p id="cart-store-desc" class="store-subtext">Store description</p>
             </div>
         </section>
 
         <div class="cart-page-header">
-            <h1 class="page-title">Your Shopping Cart</h1>
-            <span id="cart-item-count" class="results-count-badge">Loading...</span>
+            <div class="cart-title-group">
+                <h2 class="page-title">Your Shopping Basket</h2>
+                <span id="cart-item-count" class="results-count-badge">Loading...</span>
+            </div>
         </div>
 
         <!-- Main Cart Grid (Items + Summary Card) -->
@@ -59,19 +88,23 @@
 
             <!-- Right Column: Order Summary Card -->
             <aside id="cart-summary-card" class="cart-summary-panel" aria-label="Order Summary">
-                <h2 class="summary-title">Order Summary</h2>
+                <h3 class="summary-title">Order Summary</h3>
                 <div class="summary-row">
                     <span>Items Subtotal</span>
                     <span id="summary-subtotal">₹0</span>
                 </div>
                 <div class="summary-row">
-                    <span>Delivery Fee</span>
+                    <span>Neighborhood Delivery</span>
                     <span class="free-text">FREE</span>
                 </div>
                 <hr class="summary-divider">
                 <div class="summary-row summary-total">
                     <span>Total Amount</span>
                     <span id="summary-total">₹0</span>
+                </div>
+
+                <div class="summary-trust-notice">
+                    <span>🛡️ Direct merchant billing with zero commission markups</span>
                 </div>
 
                 <button id="btn-proceed-checkout" class="btn-checkout-primary" onclick="proceedToCheckout()">
@@ -87,9 +120,9 @@
         <section id="empty-cart-state" class="empty-cart-container" style="display: none;" aria-label="Empty Cart">
             <div class="empty-cart-card">
                 <div class="empty-cart-icon">🛒</div>
-                <h2>Your cart is empty</h2>
-                <p>Browse nearby stores and add fresh groceries to get started.</p>
-                <a href="/customer/dashboard" class="btn-browse-stores">Browse Nearby Stores</a>
+                <h2>Your basket is empty</h2>
+                <p>Discover fresh groceries and daily essentials from trusted stores in your neighborhood.</p>
+                <a href="/customer/dashboard" class="btn-browse-stores">Browse Nearby Stores →</a>
             </div>
         </section>
     </main>
@@ -99,5 +132,6 @@
     </footer>
 
     <script src="/customer/cart.js"></script>
+    <script src="/js/kw-ui-engine.js"></script>
 </body>
 </html>

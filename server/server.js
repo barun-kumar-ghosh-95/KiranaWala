@@ -10,6 +10,7 @@ require("dotenv").config({
 
 const customerRoutes = require("./routes/customerRoutes");
 const storeRoutes = require("./routes/storeRoutes");
+const aiRoutes = require("./routes/aiRoutes");
 
 const app = express();
 
@@ -97,6 +98,7 @@ mongoose.connection.on("reconnected", () => {
 // =====================================================
 
 app.use("/api/customer", customerRoutes);
+app.use("/api/customer/ai", aiRoutes);
 app.use("/api/store", storeRoutes);
 app.use("/api/store-owner", storeRoutes);
 

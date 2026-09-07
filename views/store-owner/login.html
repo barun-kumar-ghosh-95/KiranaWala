@@ -3,73 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store Owner Login</title>
+    <title>Store Owner Portal | KiranaWala</title>
+    <meta name="description" content="Sign in to your KiranaWala Store Owner dashboard to manage orders, inventory, and customer deliveries.">
+
+    <!-- Google Fonts — Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="auth-bg login-page">
-        <a href="/" class="back-link">&larr; Back to Home</a>
-        <div class="login-wrapper">
-            <h1 class="brand">Kirana<span></span>Wala</span></h1>
-            <p class="brand-sub">Store Owner Portal</p>
-
-            <div class="login-card">
-                <form id="loginForm">
-                    <label class="field-label" for="email">Email Address</label>
-                    <div class="input-row">
-                        <span class="icon-box" aria-hidden="true">&#9993;</span>
-                        <input type="email" id="email" placeholder="you@store.com" autocomplete="email" required>
-                    </div>
-
-                    <label class="field-label" for="password">Password</label>
-                    <div class="input-row">
-                        <span class="icon-box" aria-hidden="true">&#128274;</span>
-                        <input type="password" id="password" placeholder="********" autocomplete="current-password" required>
-                    </div>
-
-                    <button type="submit" class="auth-btn sign-btn">Sign In</button>
-
-                    <div class="separator"><span>OR</span></div>
-                    <p class="create-account">New store owner? <a href="/store-owner/register">Create your store</a></p>
-                </form>
+    <div class="auth-split-layout">
+        <!-- Left Editorial Visual Panel -->
+        <aside class="auth-visual-panel merchant-theme" aria-label="Merchant Platform Overview">
+            <div class="auth-visual-header">
+                <a href="/" class="brand-logo" style="color: white; font-size: 1.6rem;" aria-label="KiranaWala Home">
+                    KiranaWala<span class="brand-wordmark-dot"></span>
+                </a>
             </div>
 
-            <p class="tos-note">By signing in, you agree to our <a href="#">Terms of Service</a></p>
-        </div>
+            <div class="auth-visual-footer">
+                <div class="auth-brand-pill">
+                    <span>🏪 Merchant Operations Hub</span>
+                </div>
+                <h2 class="auth-visual-title">
+                    Empower Your Kirana.<br>
+                    <span class="auth-visual-title-highlight">Serve Your Neighborhood.</span>
+                </h2>
+                <p class="auth-visual-desc">
+                    Receive and fulfill customer orders in real-time, maintain live inventory, and build lasting relationships with neighborhood families.
+                </p>
+
+                <div class="auth-trust-badges">
+                    <div class="auth-trust-badge-item">
+                        <span class="icon">✓</span>
+                        <span>Instant order notifications & status controls</span>
+                    </div>
+                    <div class="auth-trust-badge-item">
+                        <span class="icon">📦</span>
+                        <span>Full product catalog & stock management</span>
+                    </div>
+                    <div class="auth-trust-badge-item">
+                        <span class="icon">📈</span>
+                        <span>Detailed customer insights and order histories</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Form Panel -->
+        <main class="auth-form-panel" role="main">
+            <div class="auth-form-container">
+                <nav class="auth-top-nav" aria-label="Authentication navigation">
+                    <a href="/" class="auth-back-link">← Back to Home</a>
+                    <a href="/customer/login" class="auth-switch-link">Customer Portal →</a>
+                </nav>
+
+                <div class="auth-form-header">
+                    <span class="auth-form-kicker">MERCHANT PORTAL</span>
+                    <h1 class="auth-form-title">Store Owner Sign In</h1>
+                    <p class="auth-form-subtitle">Enter your store owner credentials to access your management dashboard.</p>
+                </div>
+
+                <!-- Inline Error Banner -->
+                <div id="auth-alert-banner" class="auth-alert-banner" role="alert" aria-live="polite">
+                    <span class="alert-icon" aria-hidden="true">⚠️</span>
+                    <span id="auth-alert-text"></span>
+                </div>
+
+                <form id="loginForm" novalidate>
+                    <div class="auth-form-group">
+                        <label class="field-label" for="email">Owner Email Address</label>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">✉</span>
+                            <input type="email" id="email" placeholder="owner@store.com" autocomplete="email" required>
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label class="field-label" for="password">Password</label>
+                        <div class="input-row">
+                            <span class="icon-box" aria-hidden="true">🔒</span>
+                            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="auth-btn sign-btn">Open Store Dashboard →</button>
+
+                    <div class="separator"><span>OR</span></div>
+
+                    <p class="create-account">
+                        New store owner? <a href="/store-owner/register">Register your store</a>
+                    </p>
+
+                    <p class="tos-note">
+                        By logging in, you agree to our <a href="#">Merchant Partner Agreement</a> & <a href="#">Terms of Service</a>
+                    </p>
+                </form>
+            </div>
+        </main>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        const loginForm = document.getElementById('loginForm');
+        const alertBanner = document.getElementById('auth-alert-banner');
+        const alertText = document.getElementById('auth-alert-text');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function showError(msg) {
+            if (alertBanner && alertText) {
+                alertText.textContent = msg;
+                alertBanner.classList.add('active');
+            } else {
+                alert(msg);
+            }
+        }
+
+        function clearError() {
+            if (alertBanner) {
+                alertBanner.classList.remove('active');
+            }
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const data = {
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value
-            };
+            clearError();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showError('Please enter your owner email and password.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Authenticating...';
 
             try {
                 const response = await fetch('/api/store/login', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
                 });
 
                 const result = await response.json();
                 if (response.ok) {
                     localStorage.setItem('token', result.token);
-                    localStorage.setItem('storeId', result.storeId);
+                    if (result.storeId) {
+                        localStorage.setItem('storeId', result.storeId);
+                    }
                     window.location.href = '/store-owner/dashboard';
                 } else {
                     const errorMsg = result.message || result.error || 'Portal authentication error. Please check your credentials.';
-                    alert(errorMsg);
+                    showError(errorMsg);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Open Store Dashboard →';
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred during merchant login.');
+                showError('An error occurred during merchant login.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Open Store Dashboard →';
             }
         });
     </script>
+    <script src="/js/kw-ui-engine.js"></script>
 </body>
 </html>

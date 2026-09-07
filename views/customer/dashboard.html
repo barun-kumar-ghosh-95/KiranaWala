@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discover Stores | KiranaWala</title>
+    <title>Discover Stores | KiranaWala — Hyperlocal Commerce</title>
+    <meta name="description" content="Discover verified neighborhood kirana stores delivering fresh groceries, dairy, and daily essentials directly to your doorstep.">
 
-    <!-- Google Fonts — Inter -->
+    <!-- Google Fonts — Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -20,44 +21,114 @@
 </head>
 <body class="premium-dashboard">
 
-    <header class="premium-header">
+    <header class="premium-header" role="banner">
         <div class="premium-header-content">
-            <a href="/" class="brand-logo">KiranaWala</a>
+            <a href="/" class="brand-logo" aria-label="KiranaWala Home">
+                KiranaWala<span class="brand-wordmark-dot"></span>
+            </a>
 
-            <div class="header-controls">
+            <nav class="header-controls" aria-label="Customer Navigation">
+                <a href="/customer/dashboard" class="nav-link-btn active" aria-current="page">Stores</a>
                 <a href="/customer/orders" class="nav-link-btn">My Orders</a>
-                <a href="/customer/cart" class="nav-link-btn">Cart</a>
-                <button class="logout-link" onclick="logout()">Sign Out</button>
-            </div>
+                <a href="/customer/cart" class="nav-cart-btn" aria-label="Shopping Cart">
+                    <span class="cart-icon">🛒</span>
+                    <span class="cart-label">Cart</span>
+                    <span id="nav-cart-badge" class="nav-cart-badge" style="display:none;">0</span>
+                </a>
+                <button class="logout-link" onclick="logout()" aria-label="Sign Out">Sign Out</button>
+            </nav>
         </div>
     </header>
 
-    <main class="dashboard-main">
-        <section class="hero-section">
-            <h1 class="hero-title">Groceries from stores near you</h1>
-            <p class="hero-subtitle">Discover local stores and shop nearby.</p>
-            <div id="location-status" class="location-indicator" aria-live="polite">
-                📍 Getting location...
+    <main class="dashboard-main" role="main">
+        <!-- Editorial Discovery Hero Section -->
+        <section class="hero-section" aria-labelledby="discovery-hero-title">
+            <span class="hero-editorial-badge">01 — NEIGHBORHOOD DISCOVERY</span>
+            <h1 id="discovery-hero-title" class="hero-title">
+                Groceries from stores near you
+            </h1>
+            <p class="hero-subtitle">
+                Discover trusted local kirana stores, fresh staples, and everyday essentials delivered right to your neighborhood doorstep.
+            </p>
+
+            <div class="discovery-controls-bar">
+                <div class="discovery-search-row">
+                    <div id="location-status" class="location-indicator" aria-live="polite">
+                        <span class="status-pulse-dot"></span>
+                        <span id="location-status-text">Getting location...</span>
+                    </div>
+
+                    <div class="store-search-wrapper">
+                        <span class="store-search-icon" aria-hidden="true">🔍</span>
+                        <input type="text" id="store-search-input" class="store-search-input" placeholder="Search stores by name, category, or locality..." aria-label="Search stores">
+                        <button type="button" id="store-search-clear" class="search-clear-btn" style="display:none;" aria-label="Clear search">×</button>
+                    </div>
+                </div>
+
+                <div class="category-filter-chips" role="radiogroup" aria-label="Filter stores by category">
+                    <button type="button" class="filter-chip active" data-category="all">All Stores</button>
+                    <button type="button" class="filter-chip" data-category="general">Kirana & General</button>
+                    <button type="button" class="filter-chip" data-category="spices">Spices & Produce</button>
+                    <button type="button" class="filter-chip" data-category="dairy">Dairy & Daily</button>
+                </div>
             </div>
         </section>
 
         <!-- Map section — hidden until location is available -->
-        <section class="map-wrapper" id="map-section" hidden>
-            <div id="map"></div>
+        <section class="map-wrapper" id="map-section" hidden aria-label="Neighborhood Stores Map">
+            <div class="map-card-header">
+                <span class="map-badge">📍 Interactive Neighborhood Map</span>
+                <span class="map-help-text">Click store markers to view products</span>
+            </div>
+            <div id="map" role="application" aria-label="Map showing store locations"></div>
         </section>
 
         <!-- Location unavailable placeholder — shown when location is denied -->
-        <section class="map-placeholder" id="map-placeholder" hidden>
+        <section class="map-placeholder" id="map-placeholder" hidden aria-label="Map location offline">
             <div class="map-placeholder-inner">
-                <span class="map-placeholder-icon">🗺️</span>
-                <p class="map-placeholder-text">Enable location to see nearby stores on the map.</p>
+                <span class="map-placeholder-icon" aria-hidden="true">🗺️</span>
+                <h3 class="map-placeholder-heading">Neighborhood Map Offline</h3>
+                <p class="map-placeholder-text">
+                    Enable location permissions in your browser to view nearby stores on the map with accurate delivery distances.
+                </p>
+                <button type="button" class="btn-retry-location" onclick="requestUserLocation()">Enable Location</button>
             </div>
         </section>
 
-        <section class="discovery-section">
-            <h2 class="section-title">Nearby Stores</h2>
-            <div class="premium-stores-grid" id="stores-container">
-                <!-- Stores will be dynamically loaded here by dashboard.js -->
+        <!-- Stores Discovery Grid -->
+        <section class="discovery-section" aria-labelledby="stores-section-title">
+            <div class="discovery-header">
+                <div class="discovery-title-group">
+                    <h2 id="stores-section-title" class="section-title">Nearby Stores</h2>
+                    <span id="stores-count-badge" class="stores-count-badge">Loading...</span>
+                </div>
+            </div>
+            <div class="premium-stores-grid" id="stores-container" aria-live="polite">
+                <!-- Skeleton cards loaded initially -->
+                <div class="store-card kw-skeleton-card">
+                    <div class="kw-skeleton-box" style="height: 180px; width: 100%;"></div>
+                    <div style="padding: 1.25rem;">
+                        <div class="kw-skeleton-box" style="height: 24px; width: 70%; margin-bottom: 12px;"></div>
+                        <div class="kw-skeleton-box" style="height: 16px; width: 45%; margin-bottom: 16px;"></div>
+                        <div class="kw-skeleton-box" style="height: 40px; width: 100%; border-radius: 8px;"></div>
+                    </div>
+                </div>
+                <div class="store-card kw-skeleton-card">
+                    <div class="kw-skeleton-box" style="height: 180px; width: 100%;"></div>
+                    <div style="padding: 1.25rem;">
+                        <div class="kw-skeleton-box" style="height: 24px; width: 70%; margin-bottom: 12px;"></div>
+                        <div class="kw-skeleton-box" style="height: 16px; width: 45%; margin-bottom: 16px;"></div>
+                        <div class="kw-skeleton-box" style="height: 40px; width: 100%; border-radius: 8px;"></div>
+                    </div>
+                </div>
+                <div class="store-card kw-skeleton-card">
+                    <div class="kw-skeleton-box" style="height: 180px; width: 100%;"></div>
+                    <div style="padding: 1.25rem;">
+                        <div class="kw-skeleton-box" style="height: 24px; width: 70%; margin-bottom: 12px;"></div>
+                        <div class="kw-skeleton-box" style="height: 16px; width: 45%; margin-bottom: 16px;"></div>
+                        <div class="kw-skeleton-box" style="height: 40px; width: 100%; border-radius: 8px;"></div>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -67,7 +138,9 @@
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
 
-    <!-- Custom Dashboard Logic -->
+    <!-- Custom Dashboard Logic & AI Assistant -->
     <script src="/customer/dashboard.js"></script>
+    <script src="/js/kw-ui-engine.js"></script>
+    <script src="/js/kw-ai-assistant.js"></script>
 </body>
 </html>
