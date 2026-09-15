@@ -1,82 +1,207 @@
+<div align="center">
+
 # 🛒 KiranaWala
 
-### **A modern online grocery platform connecting local kirana stores with customers**
+### **Your local kirana store, online.**
 
-<p align="center">
-  <strong>Discover • Shop • Manage • Grow</strong>
+<p>
+  A full-stack grocery platform that connects <b>customers</b> with <b>local store owners</b> — with AI-powered shopping experiences built into the journey.
 </p>
 
-<p align="center">
-  A full-stack grocery management system built to bring the convenience of online shopping to local stores.
+<p>
+  <a href="https://github.com/Jyatin/KiranaWala"><img src="https://img.shields.io/badge/⭐%20Star%20Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="Star Repository"></a>
+  <a href="https://github.com/Jyatin/KiranaWala/issues"><img src="https://img.shields.io/badge/Issues-Open-2ea44f?style=for-the-badge&logo=github" alt="Issues"></a>
+  <a href="https://github.com/Jyatin/KiranaWala/pulls"><img src="https://img.shields.io/badge/Pull%20Requests-Welcome-8957e5?style=for-the-badge&logo=github" alt="Pull Requests"></a>
 </p>
 
-<p align="center">
-  <a href="https://github.com/Jyatin/KiranaWala"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github" alt="GitHub"></a>
-  <img src="https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js">
-  <img src="https://img.shields.io/badge/Express.js-API-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js">
-  <img src="https://img.shields.io/badge/MongoDB-Database-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
-  <img src="https://img.shields.io/badge/JWT-Authentication-000000?style=for-the-badge&logo=jsonwebtokens" alt="JWT">
+<p>
+  <img src="https://img.shields.io/badge/Node.js-Backend-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Express.js-API-000000?style=flat-square&logo=express&logoColor=white" alt="Express.js">
+  <img src="https://img.shields.io/badge/MongoDB-Database-47A248?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB">
+  <img src="https://img.shields.io/badge/JWT-Auth-000000?style=flat-square&logo=jsonwebtokens&logoColor=white" alt="JWT">
+  <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/JavaScript-Frontend-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript">
 </p>
+
+<br>
+
+**Discover stores · Browse products · Shop locally · Manage inventory · Order online · Shop smarter with AI**
+
+</div>
 
 ---
 
-## ✨ What is KiranaWala?
+## ✨ The Idea
 
-**KiranaWala** is a full-stack web application designed around a simple idea: **local grocery stores should be able to participate in online commerce without losing the convenience and familiarity of the traditional kirana experience.**
+Traditional kirana stores are deeply connected to their local communities, but many still lack the digital infrastructure that larger marketplaces provide.
 
-The platform connects two sides of the ecosystem:
+**KiranaWala is built around a simple idea:** bring local stores online without taking away the familiarity of the neighbourhood shopping experience.
 
-- 🛍️ **Customers** can discover stores, browse products, and place grocery orders online.
-- 🏪 **Store owners** can manage their stores, maintain inventory, and handle incoming orders from a dedicated workflow.
+The platform has two primary experiences:
 
-The project is being developed as a practical full-stack system with a focus on authentication, inventory, order management, and a better digital shopping experience.
-
----
-
-## 🚀 Core Features
-
-### 🛍️ Customer Experience
-
-- Secure customer registration and login
-- Browse available local stores
-- View store-specific products
-- Explore grocery inventory before ordering
-- Place orders through the platform
-- Customer-focused shopping flow
-
-### 🏪 Store Owner Experience
-
-- Store owner registration and authentication
-- Store profile management
-- Product and inventory management
-- Order management
-- Dedicated store-owner dashboard
-- Store-specific product workflows
-
-### 🤖 AI-Powered Shopping Assistant
-
-KiranaWala is also evolving toward an AI-assisted shopping experience, including intent-based basket interactions designed to make grocery shopping more natural.
-
-The project repository currently includes recent development around an **AI shopping assistant** and **AI intent basket integration**.
-
----
-
-## 🧱 Tech Stack
-
-| Layer | Technology |
+| 🛍️ Customers | 🏪 Store Owners |
 |---|---|
-| Frontend | HTML, CSS, JavaScript |
-| Backend | Node.js, Express.js |
-| Database | MongoDB |
-| Authentication | JWT |
-| Package Manager | npm |
-| Testing | Project test suite under `server/__tests__` |
-| Code Quality | ESLint / GitHub Actions |
-| Containerization | Docker / Docker Compose |
+| Discover local stores | Register & manage stores |
+| Browse products | Manage product inventory |
+| Explore store-specific items | Manage incoming orders |
+| Place grocery orders | Customize store profiles |
+| Get a smoother shopping experience | Operate through a dedicated dashboard |
+
+> **The long-term vision:** make local commerce as convenient digitally as it is in person.
 
 ---
 
-## 📁 Project Structure
+## 🎯 What Makes KiranaWala Different?
+
+### 🏘️ Local-first commerce
+
+Instead of treating every grocery store as another listing in a giant marketplace, KiranaWala focuses on the relationship between **customers and their nearby stores**.
+
+### 🤖 AI-assisted shopping
+
+The project is evolving beyond a traditional e-commerce flow with an **AI shopping assistant** and **intent-based basket integration**.
+
+The goal is simple: customers should eventually be able to express what they want naturally, while the system helps turn that intent into a useful shopping basket.
+
+### ⚡ Built as a real full-stack system
+
+KiranaWala is not just a frontend mockup. It includes:
+
+- REST-style backend routes
+- MongoDB data models
+- JWT authentication
+- Customer and store-owner workflows
+- Inventory management foundations
+- Order-management foundations
+- Automated CI workflows
+- Docker configuration
+- Testing infrastructure
+
+---
+
+## 🧩 Feature Map
+
+<details>
+<summary><b>🛍️ Customer Experience</b></summary>
+
+<br>
+
+- Customer registration
+- Customer authentication
+- Browse local stores
+- View products belonging to a store
+- Place orders
+- Customer-focused shopping interface
+- AI-assisted shopping direction
+
+</details>
+
+<details>
+<summary><b>🏪 Store Owner Experience</b></summary>
+
+<br>
+
+- Store-owner registration
+- Store-owner login
+- Store profile management
+- Product management
+- Inventory workflows
+- Order management
+- Dedicated dashboard
+
+</details>
+
+<details>
+<summary><b>🤖 AI Shopping Experience</b></summary>
+
+<br>
+
+The repository includes ongoing work around:
+
+- AI shopping assistant interactions
+- Natural-language shopping intent
+- Intent-to-basket conversion
+- Smarter customer shopping workflows
+
+</details>
+
+<details>
+<summary><b>🛡️ Engineering & Infrastructure</b></summary>
+
+<br>
+
+- JWT-based authentication
+- MongoDB persistence
+- Express.js API layer
+- Automated linting
+- GitHub Actions
+- Docker / Docker Compose
+- Test suite under `server/__tests__`
+
+</details>
+
+---
+
+## 🏗️ Architecture
+
+```text
+                         ┌──────────────────────┐
+                         │       Customer       │
+                         │  Browse · Shop · Buy │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                         ┌──────────────────────┐
+                         │      Frontend        │
+                         │   HTML · CSS · JS    │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                         ┌──────────────────────┐
+                         │    Express / Node    │
+                         │     REST API Layer   │
+                         └──────┬─────────┬─────┘
+                                │         │
+                    ┌───────────┘         └────────────┐
+                    ▼                                  ▼
+          ┌─────────────────┐                 ┌─────────────────┐
+          │   MongoDB       │                 │  JWT Auth       │
+          │ Users · Stores  │                 │ Customer / Owner│
+          │ Products · Data │                 └─────────────────┘
+          └─────────────────┘
+                                │
+                                ▼
+                       ┌──────────────────┐
+                       │   AI Experience  │
+                       │ Intent → Basket  │
+                       └──────────────────┘
+
+                         ┌──────────────────────┐
+                         │     Store Owner      │
+                         │ Inventory · Orders   │
+                         └──────────────────────┘
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Role |
+|---|---|---|
+| 🎨 Frontend | HTML, CSS, JavaScript | Customer & store-owner interfaces |
+| ⚙️ Backend | Node.js | Server runtime |
+| 🔌 API | Express.js | Application/API layer |
+| 🗄️ Database | MongoDB | Persistent application data |
+| 🔐 Authentication | JWT | Secure authentication flow |
+| 📦 Package Manager | npm | Dependency management |
+| 🧪 Testing | Project test suite | Backend testing |
+| 🧹 Code Quality | ESLint | Static analysis & linting |
+| 🔄 CI/CD | GitHub Actions | Automated checks |
+| 🐳 Deployment | Docker / Docker Compose | Containerized development |
+
+---
+
+## 📂 Project Structure
 
 ```text
 KiranaWala/
@@ -133,52 +258,55 @@ KiranaWala/
 
 ---
 
-## 🔌 API Endpoints
+## 🔌 API
 
-### Customer Routes
+### Customer
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| `POST` | `/api/customer/register` | Register a new customer |
+| Method | Endpoint | Description |
+|:---:|---|---|
+| `POST` | `/api/customer/register` | Register a customer |
 | `POST` | `/api/customer/login` | Authenticate a customer |
 
-### Store Routes
+### Store Owner
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| `POST` | `/api/store/register` | Register a new store owner |
+| Method | Endpoint | Description |
+|:---:|---|---|
+| `POST` | `/api/store/register` | Register a store owner |
 | `POST` | `/api/store/login` | Authenticate a store owner |
 
-> More endpoints can be added as customer shopping, inventory, and ordering flows continue to evolve.
+> 🚧 The API surface is actively evolving as shopping, inventory, order-management and AI capabilities expand.
 
 ---
 
-## ⚙️ Getting Started
+## 🚀 Getting Started
 
-### Prerequisites
+### 1. Prerequisites
 
-Make sure you have the following installed:
+Install:
 
-- [Node.js](https://nodejs.org/) v14 or higher
-- [MongoDB](https://www.mongodb.com/)
-- npm
+- **Node.js** v14+
+- **MongoDB**
+- **npm**
+- **Docker** *(optional)*
 
-### 1. Clone the repository
+### 2. Clone
 
 ```bash
 git clone https://github.com/Jyatin/KiranaWala.git
 cd KiranaWala
 ```
 
-### 2. Install dependencies
+### 3. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Configure environment variables
+If you are working inside the server package as well, install its dependencies according to `server/package.json`.
 
-Create a `.env` file in the project root:
+### 4. Configure environment variables
+
+Create a `.env` file for the server configuration:
 
 ```env
 MONGO_URI=your_mongodb_uri
@@ -186,13 +314,15 @@ JWT_SECRET=your_secret_key
 PORT=3000
 ```
 
-### 4. Start the application
+⚠️ **Never commit real secrets, database credentials, or `.env` files.**
+
+### 5. Start the server
 
 ```bash
 node server/server.js
 ```
 
-The application will be available at:
+Open:
 
 ```text
 http://localhost:3000
@@ -200,131 +330,163 @@ http://localhost:3000
 
 ---
 
-## 🐳 Docker
+## 🐳 Run with Docker
 
-KiranaWala includes Docker configuration for containerized development and deployment workflows.
-
-With Docker Compose available, you can start the project using:
+KiranaWala includes Docker configuration for containerized development.
 
 ```bash
 docker compose up --build
 ```
 
-Stop the services with:
+Stop the containers:
 
 ```bash
 docker compose down
 ```
 
-> Make sure your environment variables and database configuration are appropriate for your deployment setup.
-
 ---
 
-## 🧪 Testing & Code Quality
+## 🧪 Testing & Quality
 
-The project contains a dedicated test directory under:
+The repository includes a backend test directory:
 
 ```text
 server/__tests__/
 ```
 
-For development, run the available npm scripts defined in the relevant `package.json` files.
+GitHub Actions workflows are also included for automated project checks and linting.
 
-The repository also includes GitHub Actions workflows for automated checks, including linting and Node.js-related CI tasks.
+Before opening a pull request, make sure to:
+
+```bash
+# Install dependencies
+npm install
+
+# Run the project's available scripts
+npm test
+npm run lint
+```
+
+> If a script is not available in your current package configuration, use the scripts defined in the relevant `package.json`.
 
 ---
 
-## 🛠️ Development Workflow
+## 🌱 Development Roadmap
 
-KiranaWala is actively evolving. The current development direction includes:
+### Shopping
 
-- improving the customer shopping experience
-- expanding store management capabilities
-- strengthening inventory workflows
-- improving order processing
-- developing AI-assisted grocery interactions
-- refining the overall full-stack architecture
+- [ ] Richer product discovery
+- [ ] Improved cart experience
+- [ ] Complete order lifecycle
+- [ ] Better local-store discovery
 
-This makes the repository suitable for experimenting with real-world full-stack patterns while continuously adding product functionality.
+### Store Management
+
+- [ ] Advanced inventory controls
+- [ ] Better order dashboards
+- [ ] Store analytics
+- [ ] Improved product management
+
+### AI
+
+- [x] AI shopping assistant foundation
+- [x] Intent-based basket integration
+- [ ] Smarter shopping intent extraction
+- [ ] Context-aware recommendations
+- [ ] Personalized shopping assistance
+
+### Engineering
+
+- [ ] Expand automated test coverage
+- [ ] Improve API documentation
+- [ ] Strengthen observability
+- [ ] Improve deployment workflows
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome.
+Contributions, ideas and improvements are welcome.
 
-### Contribution flow
-
-1. Fork the repository.
-2. Create a feature branch:
+### Contribution workflow
 
 ```bash
-git checkout -b feature/AmazingFeature
-```
+# Fork the repository, then clone your fork
+git clone https://github.com/YOUR_USERNAME/KiranaWala.git
+cd KiranaWala
 
-3. Make your changes and test them locally.
-4. Commit your changes:
+# Create a feature branch
+git checkout -b feature/your-feature
 
-```bash
+# Make your changes
+
+# Commit
 git add .
-git commit -m "Add some AmazingFeature"
+git commit -m "feat: describe your change"
+
+# Push
+git push origin feature/your-feature
 ```
 
-5. Push your branch:
+Then open a **Pull Request** and explain:
 
-```bash
-git push origin feature/AmazingFeature
-```
+- What changed
+- Why it was needed
+- How you tested it
+- Any screenshots or API examples that help reviewers
 
-6. Open a Pull Request with a clear description of the changes.
+### 💡 Good first contributions
 
-### Good contribution practices
-
-- Keep changes focused and reviewable.
-- Follow the existing project structure.
-- Do not commit secrets or `.env` credentials.
-- Add or update tests when appropriate.
-- Explain significant architectural or API changes in the PR description.
+- UI improvements
+- Test coverage
+- API documentation
+- Bug fixes
+- Accessibility improvements
+- Performance improvements
+- Developer experience improvements
 
 ---
 
-## 🗺️ Roadmap
+## 📌 Current Development
 
-The roadmap is intentionally flexible as development continues, but the project is moving toward:
+KiranaWala is actively being developed with a focus on making local grocery shopping **simpler for customers and more powerful for store owners**.
 
-- [ ] richer customer shopping flows
-- [ ] stronger product discovery
-- [ ] expanded cart and ordering capabilities
-- [ ] deeper inventory management
-- [ ] enhanced store-owner tools
-- [ ] more capable AI shopping assistance
-- [ ] improved test coverage
-- [ ] stronger deployment and observability workflows
+Recent development includes work on the **AI shopping assistant** and **intent-based basket integration**, while the underlying customer, store, inventory and ordering architecture continues to grow.
 
 ---
 
 ## 👨‍💻 Author
 
-**Jyatin Singh**
+<div align="center">
 
-- GitHub: [@Jyatin](https://github.com/Jyatin)
-- LinkedIn: [Jyatin Singh](https://www.linkedin.com/in/jyatin-singh-88984831b/)
-- Email: [singhjyatin@gmail.com](mailto:singhjyatin@gmail.com)
+### Jyatin Singh
 
----
+<a href="https://github.com/Jyatin">GitHub</a> ·
+<a href="https://www.linkedin.com/in/jyatin-singh-88984831b/">LinkedIn</a> ·
+<a href="mailto:singhjyatin@gmail.com">Email</a>
 
-## 🔗 Project Links
-
-- **Repository:** https://github.com/Jyatin/KiranaWala
+</div>
 
 ---
 
-## 📄 License
+## ⭐ Support the Project
 
-A license is not currently specified in the repository. Add a `LICENSE` file when you are ready to define how others may use, modify, and distribute the project.
+If you like the idea behind KiranaWala, consider giving the repository a **⭐ star** and sharing feedback through **Issues** or **Pull Requests**.
+
+<div align="center">
+
+<a href="https://github.com/Jyatin/KiranaWala">⭐ Star KiranaWala</a> ·
+<a href="https://github.com/Jyatin/KiranaWala/issues">🐛 Report an Issue</a> ·
+<a href="https://github.com/Jyatin/KiranaWala/pulls">🚀 Contribute</a>
+
+</div>
 
 ---
 
-<p align="center">
-  Built with ❤️ by <a href="https://github.com/Jyatin">Jyatin Singh</a>
-</p>
+<div align="center">
+
+**Built with ❤️ for better local commerce.**
+
+`KiranaWala` · Local stores, connected digitally.
+
+</div>
