@@ -260,19 +260,28 @@ KiranaWala/
 
 ## 🔌 API
 
+KiranaWala exposes REST-style APIs for customer and store-owner authentication.
+
 ### Customer
 
 | Method | Endpoint | Description |
-|:---:|---|---|
-| `POST` | `/api/customer/register` | Register a customer |
+|---|---|---|
+| `POST` | `/api/customer/register` | Register a new customer |
 | `POST` | `/api/customer/login` | Authenticate a customer |
 
 ### Store Owner
 
 | Method | Endpoint | Description |
-|:---:|---|---|
+|---|---|---|
 | `POST` | `/api/store/register` | Register a store owner |
 | `POST` | `/api/store/login` | Authenticate a store owner |
+
+### Local API Base URL
+
+When running the application locally:
+
+```text
+http://localhost:3000
 
 > 🚧 The API surface is actively evolving as shopping, inventory, order-management and AI capabilities expand.
 
