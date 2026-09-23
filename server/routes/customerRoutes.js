@@ -481,12 +481,19 @@ router.post("/cart/basket", authenticateToken, async (req, res) => {
     // Verify all products in database
     for (const item of items) {
       const productId = item.productId || item._id;
-      const quantity = parseInt(item.quantity, 10) || 1;
+      const quantity = Number(item.quantity);
 
       if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
         return res
           .status(400)
           .json({ message: "Invalid product ID in basket" });
+      }
+
+      if (!Number.isInteger(quantity) || quantity <= 0) {
+        return res.status(400).json({
+          message: "Basket item quantity must be a positive integer",
+          productId,
+        });
       }
 
       const product = await Product.findById(productId);
@@ -508,7 +515,6 @@ router.post("/cart/basket", authenticateToken, async (req, res) => {
           outOfStockProduct: product.name,
         });
       }
-
       const existingIndex = cart.items.findIndex(
         (i) => i.product.toString() === productId.toString(),
       );
